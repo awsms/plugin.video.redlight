@@ -233,7 +233,7 @@ class SourcesResults(BaseDialog):
 						else: set_properties({'source_type': '%s' % cache_flag})
 					set_properties({'provider': provider})
 				else:
-					source_site = source.upper()
+					source_site = (get('source_site') or source).upper()
 					provider, provider_icon = self.get_provider_and_path(source.lower())
 					if highlight_type == 0: key = provider
 					else: key = basic_quality

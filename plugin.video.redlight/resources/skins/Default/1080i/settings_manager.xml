@@ -2161,6 +2161,39 @@
                           <property name="setting_description">Choose the order in which All Debrid results appear in relation to any other active accounts. The lower the number, the higher the sort order</property>
                           <onclick>RunPlugin(plugin://plugin.video.redlight/?mode=settings_manager.set_numeric&amp;setting_id=ad.priority)</onclick>
                       </item>
+        <!-- Baguettio -->
+                      <item>
+                          <visible>Container(2000).HasFocus(60)</visible>
+                          <property name="setting_label">Baguettio</property>
+                          <property name="setting_type">separator</property>
+                          <onclick>noop</onclick>
+                      </item>
+                      <item>
+                          <visible>Container(2000).HasFocus(60)</visible>
+                          <property name="setting_label">Enable</property>
+                          <property name="setting_type">boolean</property>
+                          <property name="setting_value">$INFO[Window(10000).Property(redlight.provider.baguettio)]</property>
+                          <property name="setting_description">Enable the Baguettio Stremio source. Requires the configured manifest URL below.</property>
+                          <onclick>RunPlugin(plugin://plugin.video.redlight/?mode=settings_manager.set_boolean&amp;setting_id=provider.baguettio)</onclick>
+                      </item>
+                      <item>
+                          <visible>Container(2000).HasFocus(60)</visible>
+                          <visible>String.IsEqual(Window(10000).Property(redlight.provider.baguettio),true)</visible>
+                          <property name="setting_label">    - Manifest URL</property>
+                          <property name="setting_type">string</property>
+                          <property name="setting_value">$INFO[Window(10000).Property(redlight.baguettio.manifest_url)]</property>
+                          <property name="setting_description">Paste the full configured manifest.json URL of your Stremio addon (e.g. https://host/&lt;config&gt;/manifest.json). Red Light queries &lt;base&gt;/stream/{type}/{id}.json using IMDb ids.</property>
+                          <onclick>RunPlugin(plugin://plugin.video.redlight/?mode=settings_manager.set_string&amp;setting_id=baguettio.manifest_url)</onclick>
+                      </item>
+                      <item>
+                          <visible>Container(2000).HasFocus(60)</visible>
+                          <visible>String.IsEqual(Window(10000).Property(redlight.provider.baguettio),true)</visible>
+                          <property name="setting_label">    - Filter Results by Name</property>
+                          <property name="setting_type">boolean</property>
+                          <property name="setting_value">$INFO[Window(10000).Property(redlight.baguettio.title_filter)]</property>
+                          <property name="setting_description">Match returned filenames against the title (and aliases). Leave OFF if the addon returns generic/sanitised filenames, otherwise valid links may be filtered out.</property>
+                          <onclick>RunPlugin(plugin://plugin.video.redlight/?mode=settings_manager.set_boolean&amp;setting_id=baguettio.title_filter)</onclick>
+                      </item>
         <!-- EasyNews -->
                       <item>
                           <visible>Container(2000).HasFocus(60)</visible>

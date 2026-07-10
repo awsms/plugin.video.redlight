@@ -511,6 +511,11 @@ def aiostreams_active():
 	if get_setting('redlight.provider.aiostreams', 'false') == 'true': return aiostreams_authorized()
 	return False
 
+def baguettio_active():
+	if get_setting('redlight.provider.baguettio', 'false') != 'true': return False
+	from apis import baguettio_api
+	return bool(baguettio_api.base_url())
+
 def extras_enable_extra_ratings():
 	return get_setting('redlight.extras.enable_extra_ratings', 'true') == 'true'
 
@@ -546,7 +551,7 @@ def tv_progress_location():
 
 def check_prescrape_sources(scraper, media_type):
 	"""Prescrape only when Check Before Full Search is enabled for that provider."""
-	if scraper in ('easynews', 'aiostreams', 'rd_cloud', 'pm_cloud', 'ad_cloud', 'oc_cloud', 'tb_cloud'):
+	if scraper in ('easynews', 'aiostreams', 'baguettio', 'rd_cloud', 'pm_cloud', 'ad_cloud', 'oc_cloud', 'tb_cloud'):
 		return get_setting('redlight.check.%s' % scraper) == 'true'
 	if scraper == 'folders':
 		return get_setting('redlight.check.folders') == 'true'
@@ -818,6 +823,7 @@ def active_internal_scrapers():
 		if enabled_debrids_check(item[0]): settings_append(item[1])
 	active = [i.split('.')[1] for i in settings if get_setting('redlight.%s' % i) == 'true']
 	if aiostreams_active(): active.append('aiostreams')
+	if baguettio_active(): active.append('baguettio')
 	return active
 
 def provider_sort_ranks():
