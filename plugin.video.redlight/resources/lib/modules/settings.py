@@ -516,6 +516,9 @@ def baguettio_active():
 	from apis import baguettio_api
 	return bool(baguettio_api.base_url())
 
+def aiostreams_preserve_order():
+	return get_setting('redlight.aiostreams.preserve_order', 'true') == 'true'
+
 def extras_enable_extra_ratings():
 	return get_setting('redlight.extras.enable_extra_ratings', 'true') == 'true'
 
@@ -961,6 +964,16 @@ def fallback_watched_provider_on_revoke(revoked_index):
 def watched_indicators():
 	return _resolve_watched_provider()
 
+def provider_sync_refresh_widgets(provider_index):
+	"""Refresh home widgets after a provider sync only when that provider owns watched/progress indicators."""
+	if watched_indicators() != provider_index:
+		return False
+	keys = {1: 'trakt.refresh_widgets', 2: 'simkl.refresh_widgets', 3: 'mdblist.refresh_widgets'}
+	key = keys.get(provider_index)
+	if not key:
+		return False
+	return get_setting('redlight.%s' % key, 'false') == 'true'
+
 def most_watched_provider():
 	return 'simkl' if watched_indicators() == 2 else 'trakt'
 
@@ -1134,5 +1147,4 @@ def rpdb_info(media_type):
 
 def use_season_name():
 	return get_setting('redlight.use_season_name', 'false') == 'true'
-
 

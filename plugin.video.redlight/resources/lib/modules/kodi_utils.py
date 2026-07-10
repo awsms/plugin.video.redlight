@@ -213,6 +213,8 @@ MEDIA_GITHUB_USER = 'The-Red-Wizard'
 MEDIA_GITHUB_REPO = 'TheRedWizard.github.io'
 MEDIA_GITHUB_RAW = 'https://raw.githubusercontent.com/%s/%s/main/packages/media' % (MEDIA_GITHUB_USER, MEDIA_GITHUB_REPO)
 LEGACY_MEDIA_GITHUB_RAW = 'https://raw.githubusercontent.com/TheRedWizard/TheRedWizard.github.io/main/packages/media'
+# Estuary WideList row icons use ListItem.Icon only for Container.Content() — not files.
+MENU_FOLDER_CONTENT = ''
 
 def media_github_credentials():
 	return MEDIA_GITHUB_USER, MEDIA_GITHUB_REPO
@@ -239,6 +241,13 @@ def resolve_list_icon(icon, default_name='folder'):
 				return get_icon(name, folder, ext)
 		return get_icon(os.path.splitext(os.path.basename(icon_norm))[0])
 	return get_icon(icon)
+
+def set_list_item_art(listitem, icon, fanart=None, banner=None, landscape=None):
+	art = {'icon': icon, 'poster': icon, 'thumb': icon, 'banner': banner or icon, 'landscape': landscape or icon}
+	if fanart: art['fanart'] = fanart
+	listitem.setArt(art)
+	try: listitem.setIconImage(icon) # Estuary WideList reads ListItem.Icon, not Art(thumb).
+	except: pass
 
 def get_addon_fanart():
 	return get_property('redlight.default_addon_fanart') or addon_fanart()
@@ -358,7 +367,7 @@ def add_dir(handle, url_params, list_name, icon_image='folder', fanart_image=Non
 	url = build_url(url_params)
 	listitem = make_listitem()
 	listitem.setLabel(list_name)
-	listitem.setArt({'icon': icon, 'poster': icon, 'thumb': icon, 'fanart': fanart, 'banner': fanart})
+	set_list_item_art(listitem, icon, fanart=fanart, banner=fanart)
 	info_tag = listitem.getVideoInfoTag(True)
 	info_tag.setPlot(' ')
 	add_item(handle, url, listitem, isFolder)
@@ -420,7 +429,7 @@ def set_view_mode(view_type, content='files', is_external=None, fallback_view_ty
 	if is_external: return
 	view_id = _resolve_view_id(view_type, fallback_view_types)
 	if not view_id: return
-	if content in ('', None): content = 'files'
+	if content is None: content = 'files'
 	try:
 		sleep(100)
 		for _ in range(3000):
@@ -459,6 +468,20 @@ def set_property(prop, value):
 
 def clear_property(prop):
 	return kodi_window().clearProperty(prop)
+
+def sync_scrape_progress_ui(percent=0, results_sd=0, results_720p=0, results_1080p=0, results_4k=0, results_total=0):
+	set_property('redlight.scrape.percent', str(int(percent)))
+	set_property('redlight.scrape.results_sd', str(results_sd))
+	set_property('redlight.scrape.results_720p', str(results_720p))
+	set_property('redlight.scrape.results_1080p', str(results_1080p))
+	set_property('redlight.scrape.results_4k', str(results_4k))
+	set_property('redlight.scrape.results_total', str(results_total))
+
+def clear_scrape_progress_ui():
+	for prop in ('redlight.scrape.percent', 'redlight.scrape.results_sd', 'redlight.scrape.results_720p',
+			'redlight.scrape.results_1080p', 'redlight.scrape.results_4k', 'redlight.scrape.results_total',
+			'redlight.scrape.ready'):
+		clear_property(prop)
 
 def clear_all_properties():
 	return kodi_window().clearProperties()
@@ -604,7 +627,9 @@ def kodi_refresh():
 	execute_builtin('UpdateLibrary(video,special://skin/foo)')
 
 SHUTTING_DOWN_PROP = 'redlight.shutting_down'
-
+PROP_AUTOSCRAPE_TOAST_SHOWN = 'redlight.autoscrape_nextep_toast_shown'
+PLAYBACK_WIDGET_REFRESH_PROP = 'redlight.playback_widget_refresh_at'
+PLAYBACK_WIDGET_REFRESH_COOLDOWN_SEC = 120
 def service_shutting_down(monitor=None):
 	if monitor and monitor.abortRequested(): return True
 	return get_property(SHUTTING_DOWN_PROP) == 'true'
@@ -624,22 +649,25 @@ def schedule_widget_refresh(silent=True, reload_skin=False):
 	url = 'plugin://plugin.video.redlight/?mode=refresh_widgets&silent=%s&reload_skin=%s' % ('true' if silent else 'false', 'true' if reload_skin else 'false')
 	execute_builtin('AlarmClock(redlight_widget_refresh,RunPlugin(%s),00:00:02,silent)' % url)
 
-PLAYBACK_WIDGET_REFRESH_PROP = 'redlight.widgets_refresh_playback'
-PLAYBACK_WIDGET_REFRESH_SUPPRESS_SEC = 120
-
-def schedule_playback_widget_refresh():
-	if service_shutting_down(): return
-	from time import time
-	set_property(PLAYBACK_WIDGET_REFRESH_PROP, str(int(time())))
-	schedule_widget_refresh(silent=True)
+def mark_playback_widget_refresh():
+	try:
+		from time import time
+		set_property(PLAYBACK_WIDGET_REFRESH_PROP, str(time()))
+	except:
+		pass
 
 def playback_widget_refresh_recent():
 	try:
 		from time import time
-		stamp = get_property(PLAYBACK_WIDGET_REFRESH_PROP)
-		if not stamp: return False
-		return (time() - float(stamp)) < PLAYBACK_WIDGET_REFRESH_SUPPRESS_SEC
-	except: return False
+		at = float(get_property(PLAYBACK_WIDGET_REFRESH_PROP) or 0)
+		return at > 0 and (time() - at) < PLAYBACK_WIDGET_REFRESH_COOLDOWN_SEC
+	except:
+		return False
+
+def schedule_playback_widget_refresh():
+	if service_shutting_down(): return
+	mark_playback_widget_refresh()
+	schedule_widget_refresh(silent=True)
 
 def refresh_widgets(silent=False, reload_skin=False):
 	if service_shutting_down(): return
@@ -863,7 +891,7 @@ def jsonrpc_set_system_setting(setting_id, value):
 	try: return get_jsonrpc(command)
 	except: return None
 
-def open_settings():
+def open_settings(section=None):
 	try:
 		from caches.settings_cache import refresh_settings_manager_properties
 		refresh_settings_manager_properties()
@@ -873,8 +901,17 @@ def open_settings():
 		from apis.aiostreams_api import refresh_settings_properties
 		refresh_settings_properties()
 	except: pass
+	section_indexes = {'torrent': 5, 'direct': 6, '61': 5, '62': 6, 'torrent_sources': 5, 'direct_sources': 6}
+	focus_key = str(section or '').strip().lower()
+	if focus_key in section_indexes:
+		set_property('redlight.settings_manager.focus_index', str(section_indexes[focus_key]))
+	else:
+		clear_property('redlight.settings_manager.focus_index')
 	from windows.base_window import open_window
-	open_window(('windows.settings_manager', 'SettingsManager'), 'settings_manager.xml')
+	try:
+		open_window(('windows.settings_manager', 'SettingsManager'), 'settings_manager.xml')
+	finally:
+		clear_property('redlight.settings_manager.focus_index')
 
 def external_scraper_settings(params=None):
 	try:
@@ -985,8 +1022,9 @@ LIST_ITEM_NOT_IN_LIST = 'Item not in list'
 
 def notification(line1, time=5000, icon=None, settle_ms=0):
 	# Brief delay helps Kodi show the toast after select/confirm dialogs close (rapid calls can drop it otherwise).
+	# sound=False: silent toast — especially during playback (Next Episode Ready, Next Up).
 	if settle_ms: sleep(settle_ms)
-	kodi_dialog().notification('Red Light', line1, icon or addon_icon(), time)
+	kodi_dialog().notification('Red Light', line1, icon or addon_icon(), time, False)
 
 def player_check(mode, params):
 	from modules.settings import playback_key

@@ -7,8 +7,7 @@ from modules.settings import debrid_cache_check, external_module_display_name
 from modules.utils import TaskPool
 from modules.source_utils import source_filters
 from modules.settings import provider_sort_ranks, avoid_episode_spoilers, max_threads
-from modules.kodi_utils import get_icon, kodi_dialog, hide_busy_dialog, addon_fanart, select_dialog, ok_dialog, notification
-# from modules.kodi_utils import logger
+from modules.kodi_utils import get_icon, kodi_dialog, hide_busy_dialog, show_busy_dialog, addon_fanart, select_dialog, ok_dialog, notification
 
 def _highlight_with_alpha(color, alpha):
 	if not color: return color or 'FFCCCCCC'
@@ -63,6 +62,7 @@ class SourcesResults(BaseDialog):
 
 	def onInit(self):
 		self.filter_applied = False
+		hide_busy_dialog()
 		if self.make_poster: self.set_poster()
 		self.add_items(self.window_id, self.item_list)
 		self.add_items(self.filter_window_id, self.filter_list)
@@ -72,7 +72,9 @@ class SourcesResults(BaseDialog):
 		self.doModal()
 		self.clearProperties()
 		self.clear_home_property('window_theme.sources')
-		hide_busy_dialog()
+		action = self.selected[0] if self.selected else None
+		if action != 'play':
+			hide_busy_dialog()
 		return self.selected
 
 	def get_provider_and_path(self, provider):
@@ -151,6 +153,7 @@ class SourcesResults(BaseDialog):
 					self.sources_ref._prepare_resolve_ui()
 			except:
 				pass
+			show_busy_dialog()
 			self.selected = ('play', chosen_source)
 			return self.close()
 		elif action in self.context_actions:
@@ -233,22 +236,41 @@ class SourcesResults(BaseDialog):
 						else: set_properties({'source_type': '%s' % cache_flag})
 					set_properties({'provider': provider})
 				else:
-					source_site = (get('source_site') or source).upper()
-					provider, provider_icon = self.get_provider_and_path(source.lower())
-					if highlight_type == 0: key = provider
+					if scrape_provider == 'aiostreams':
+						aio_label = get('aio_source_label') or 'AIO'
+						source_site = (get('source_site') or get('aio_site_name') or get('aio_source_name') or aio_label.replace('AIO / ', '')).upper()
+						provider = aio_label
+						provider_icon = self.get_provider_and_path(get('aio_source_icon', 'aiostreams'))[1]
+						hoster_label = get('aio_hoster') or 'DIRECT'
+					else:
+						source_site = (get('source_site') or source).upper()
+						provider, provider_icon = self.get_provider_and_path(source.lower())
+						hoster_label = 'DIRECT'
+					if highlight_type == 0: key = source.lower() if scrape_provider == 'aiostreams' else provider
 					else: key = basic_quality
 					item_highlight = self.info_highlights_dict[key]
-					set_properties({'source_type': 'DIRECT', 'provider': provider.upper()})
+					set_properties({'source_type': hoster_label, 'provider': provider.upper()})
 				highlight_bg = _highlight_with_alpha(item_highlight, self.highlight_alpha) if self.tint_focused_background else 'FFCCCCCC'
 				scraper_module = ''
 				scraper_suffix = ''
+				scraper_suffix_tint = ''
+				scraper_module_label = ''
 				if scrape_provider == 'external':
 					scraper_module = external_module_display_name(get('external_module', ''))
 					if scraper_module:
+						scraper_module_label = 'Scraper'
 						scraper_suffix = '     [COLOR %s][B]Scraper: [/B][/COLOR]%s' % (item_highlight, scraper_module.upper())
+						scraper_suffix_tint = '     [COLOR FFA8A8A8][B]Scraper: [/B][/COLOR][COLOR FFFFFFFF]%s[/COLOR]' % scraper_module.upper()
+				elif scrape_provider == 'aiostreams':
+					scraper_module = get('aio_release_group') or ''
+					if scraper_module:
+						scraper_module_label = 'Group'
+						scraper_suffix = '     [COLOR %s][B]Group: [/B][/COLOR]%s' % (item_highlight, scraper_module.upper())
+						scraper_suffix_tint = '     [COLOR FFA8A8A8][B]Group: [/B][/COLOR][COLOR FFFFFFFF]%s[/COLOR]' % scraper_module.upper()
 				set_properties({'name': name.upper(), 'source_site': source_site, 'provider_icon': provider_icon, 'quality_icon': quality_icon, 'count': '%02d.' % count,
 						'size_label': get('size_label', 'N/A'), 'extraInfo': extraInfo, 'quality': quality.upper(), 'hash': get('hash', 'N/A'), 'source': json.dumps(item),
-						'highlight': item_highlight, 'highlight_bg': highlight_bg, 'scraper_module': scraper_module.upper() if scraper_module else '', 'scraper_suffix': scraper_suffix})
+						'highlight': item_highlight, 'highlight_bg': highlight_bg, 'scraper_module': scraper_module.upper() if scraper_module else '', 'scraper_module_label': scraper_module_label,
+						'scraper_suffix': scraper_suffix, 'scraper_suffix_tint': scraper_suffix_tint})
 				item_list.append((listitem, count))
 			except: pass
 		try:
@@ -296,7 +318,19 @@ class SourcesResults(BaseDialog):
 		sort_ranks['premiumize'] = sort_ranks.pop('premiumize.me')
 		provider_choices = sorted(sort_ranks.keys(), key=sort_ranks.get)
 		provider_choices = [i.upper() for i in provider_choices]
-		providers.sort(key=provider_choices.index)
+		_aio_inner_to_choice = {'TB': 'TORBOX', 'PM': 'PREMIUMIZE', 'RD': 'REAL-DEBRID', 'AD': 'ALLDEBRID', 'OC': 'OFFCLOUD', 'EN': 'EASYNEWS'}
+		def _provider_filter_sort_key(label):
+			key = label.upper().replace('.ME', '')
+			try: return (0, provider_choices.index(key))
+			except ValueError: pass
+			if key.startswith('AIO /'):
+				inner = key.replace('AIO /', '').strip().rstrip('+')
+				mapped = _aio_inner_to_choice.get(inner)
+				if mapped in provider_choices:
+					return (0, provider_choices.index(mapped))
+				return (1, key)
+			return (2, key)
+		providers.sort(key=_provider_filter_sort_key)
 		qualities = [('Show [B]%s[/B] Only | [B]%d[/B] Results' % (i, quality_totals[i]), 'quality', i) for i in qualities]
 		providers = [('Show [B]%s[/B] Only | [B]%d[/B] Results' % (i, provider_totals[i]), 'provider', i) for i in providers]
 		data = []
@@ -393,8 +427,17 @@ class SourcesPlayback(BaseDialog):
 		self.addon_fanart = addon_fanart()
 		self.enable_scraper()
 
+	def onInit(self):
+		from modules.kodi_utils import hide_busy_dialog, set_property, sync_scrape_progress_ui
+		hide_busy_dialog()
+		sync_scrape_progress_ui(0, 0, 0, 0, 0, 0)
+		set_property('redlight.scrape.ready', 'true')
+		self.setProperty('redlight.scrape.ready', 'true')
+
 	def run(self):
 		self.doModal()
+		from modules.kodi_utils import clear_scrape_progress_ui
+		clear_scrape_progress_ui()
 		self.clearProperties()
 		self.clear_modals()
 
@@ -438,7 +481,9 @@ class SourcesPlayback(BaseDialog):
 		self.set_scraper_properties()
 
 	def enable_resolver(self):
+		from modules.kodi_utils import set_property
 		self.window_mode = 'resolver'
+		set_property('redlight.scrape.percent', '0')
 		self.setProperty('percent', '0')
 		self.set_resolver_properties()
 
@@ -449,9 +494,13 @@ class SourcesPlayback(BaseDialog):
 	def busy_spinner(self, toggle='true'):
 		self.setProperty('enable_busy_spinner', toggle)
 		if toggle == 'false':
+			from modules.kodi_utils import set_property
+			set_property('redlight.scrape.percent', '0')
 			self.setProperty('percent', '0')
 
 	def set_scraper_properties(self):
+		from modules.kodi_utils import sync_scrape_progress_ui
+		sync_scrape_progress_ui(0, 0, 0, 0, 0, 0)
 		title, genre = self.meta_get('title'), self.meta_get('genre', '')
 		fanart, clearlogo = self.meta_get('fanart') or self.addon_fanart, self.meta_get('clearlogo') or ''
 		self.setProperty('window_mode', self.window_mode)
@@ -477,16 +526,23 @@ class SourcesPlayback(BaseDialog):
 		self.update_resumer()
 
 	def update_scraper(self, results_sd, results_720p, results_1080p, results_4k, results_total, content='', percent=0):
+		from modules.kodi_utils import sync_scrape_progress_ui
+		pct = int(percent)
+		sync_scrape_progress_ui(pct, results_sd, results_720p, results_1080p, results_4k, results_total)
 		self.setProperty('results_4k', str(results_4k))
 		self.setProperty('results_1080p', str(results_1080p))
 		self.setProperty('results_720p', str(results_720p))
 		self.setProperty('results_sd', str(results_sd))
 		self.setProperty('results_total', str(results_total))
-		self.setProperty('percent', str(percent))
+		self.setProperty('percent', str(pct))
 		self.set_text(2001, content)
 
 	def update_resolver(self, text='', percent=0):
-		try: self.setProperty('percent', str(percent))
+		from modules.kodi_utils import set_property
+		pct = int(percent)
+		try:
+			set_property('redlight.scrape.percent', str(pct))
+			self.setProperty('percent', str(pct))
 		except: pass
 		if text: self.set_text(2002, text)
 
@@ -518,6 +574,7 @@ class SourcesInfo(BaseDialog):
 		self.setProperty('source_type', self.item_get_property('source_type'))
 		self.setProperty('source_site', self.item_get_property('source_site'))
 		self.setProperty('scraper_module', self.item_get_property('scraper_module'))
+		self.setProperty('scraper_module_label', self.item_get_property('scraper_module_label') or 'Scraper')
 		self.setProperty('size_label', self.item_get_property('size_label'))
 		self.setProperty('extraInfo', self.item_get_property('extraInfo'))
 		self.setProperty('highlight', self.item_get_property('highlight'))

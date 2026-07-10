@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <window>
-    <onload>SetFocus(2000,0,absolute)</onload>
+    <onload condition="!String.IsEmpty(Window(10000).Property(redlight.settings_manager.focus_index))">SetFocus(2000,$INFO[Window(10000).Property(redlight.settings_manager.focus_index)],absolute)</onload>
+    <onload condition="String.IsEmpty(Window(10000).Property(redlight.settings_manager.focus_index))">SetFocus(2000,0,absolute)</onload>
     <controls>
         <!-- Background -->
         <control type="image">
@@ -105,8 +106,11 @@
                       <item id="50">
                           <property name="setting_label">Meta Accounts</property>
                       </item>
-                      <item id="60">
-                          <property name="setting_label">Sources Accounts</property>
+                      <item id="61">
+                          <property name="setting_label">Torrent Sources</property>
+                      </item>
+                      <item id="62">
+                          <property name="setting_label">Direct Sources</property>
                       </item>
                       <item id="70">
                         <property name="setting_label">Results</property>
@@ -121,12 +125,12 @@
                 <animation effect="slide" end="0,-255" time="0" condition="Integer.IsEqual(Container(2100).NumItems,3) | Integer.IsEqual(Container(2100).NumItems,4)">Conditional</animation>
                 <animation effect="slide" end="0,-170" time="0" condition="Integer.IsEqual(Container(2100).NumItems,5) | Integer.IsEqual(Container(2100).NumItems,6)">Conditional</animation>
                 <animation effect="slide" end="0,-85" time="0" condition="Integer.IsEqual(Container(2100).NumItems,7) | Integer.IsEqual(Container(2100).NumItems,8)">Conditional</animation>
+                <animation effect="slide" end="0,0" time="0" condition="Integer.IsEqual(Container(2100).NumItems,9) | Integer.IsEqual(Container(2100).NumItems,10)">Conditional</animation>
                 <left>520</left>
                 <top>100</top>
                 <width>1160</width>
                 <height>765</height>
                 <onleft>2000</onleft>
-                <onleft>SetFocus(2100,1,absolute)</onleft>
                 <onright>10025</onright>
                 <pagecontrol>10025</pagecontrol>
                 <orientation>Vertical</orientation>
@@ -607,7 +611,7 @@
                           <property name="setting_label">Refresh Widgets After MDBList Sync</property>
                           <property name="setting_type">boolean</property>
                           <property name="setting_value">$INFO[Window(10000).Property(redlight.mdblist.refresh_widgets)]</property>
-                          <property name="setting_description">Refresh widgets after an MDBList sync when changes were detected</property>
+                          <property name="setting_description">Refresh widgets after an MDBList sync when changes were detected. Only runs when [B]Watched Indicators[/B] is set to [B]MDBList[/B].</property>
                           <onclick>RunPlugin(plugin://plugin.video.redlight/?mode=settings_manager.set_boolean&amp;setting_id=mdblist.refresh_widgets)</onclick>
                       </item>
                       <item>
@@ -650,7 +654,7 @@
                           <property name="setting_label">Refresh Widgets After Simkl Sync</property>
                           <property name="setting_type">boolean</property>
                           <property name="setting_value">$INFO[Window(10000).Property(redlight.simkl.refresh_widgets)]</property>
-                          <property name="setting_description">Enable this and Red Light will refresh widgets after performing a Simkl Sync if there were any changes</property>
+                          <property name="setting_description">Refresh widgets after a Simkl sync when changes were detected. Only runs when [B]Watched Indicators[/B] is set to [B]Simkl[/B].</property>
                           <onclick>RunPlugin(plugin://plugin.video.redlight/?mode=settings_manager.set_boolean&amp;setting_id=simkl.refresh_widgets)</onclick>
                       </item>
                       <item>
@@ -693,7 +697,7 @@
                           <property name="setting_label">Refresh Widgets After Trakt Sync</property>
                           <property name="setting_type">boolean</property>
                           <property name="setting_value">$INFO[Window(10000).Property(redlight.trakt.refresh_widgets)]</property>
-                          <property name="setting_description">Enable this and Red Light will refresh widgets after performing a Trakt Sync if there were any changes</property>
+                          <property name="setting_description">Refresh widgets after a Trakt sync when changes were detected. Only runs when [B]Watched Indicators[/B] is set to [B]Trakt[/B].</property>
                           <onclick>RunPlugin(plugin://plugin.video.redlight/?mode=settings_manager.set_boolean&amp;setting_id=trakt.refresh_widgets)</onclick>
                       </item>
                       <item>
@@ -1848,16 +1852,16 @@
                           <property name="setting_description">Enter here your Groq AI API key. This will allow you to utilize the features within Red Light that use AI, such as Browse AI Similar</property>
                           <onclick>RunPlugin(plugin://plugin.video.redlight/?mode=settings_manager.set_string&amp;setting_id=groq_api)</onclick>
                       </item>
-<!-- STREAMING ACCOUNTS 60 -->
+<!-- TORRENT SOURCES 61 / DIRECT SOURCES 62 -->
         <!-- External Scrapers -->
                       <item>
-                          <visible>Container(2000).HasFocus(60)</visible>
+                          <visible>Container(2000).HasFocus(61)</visible>
                           <property name="setting_label">External Scrapers</property>
                           <property name="setting_type">separator</property>
                           <onclick>noop</onclick>
                       </item>
                       <item>
-                          <visible>Container(2000).HasFocus(60)</visible>
+                          <visible>Container(2000).HasFocus(61)</visible>
                           <property name="setting_label">Enable</property>
                           <property name="setting_type">boolean</property>
                           <property name="setting_value">$INFO[Window(10000).Property(redlight.provider.external)]</property>
@@ -1865,7 +1869,7 @@
                           <onclick>RunPlugin(plugin://plugin.video.redlight/?mode=settings_manager.set_boolean&amp;setting_id=provider.external)</onclick>
                       </item>
                       <item>
-                          <visible>Container(2000).HasFocus(60)</visible>
+                          <visible>Container(2000).HasFocus(61)</visible>
                           <visible>String.IsEqual(Window(10000).Property(redlight.provider.external),true)</visible>
                           <visible>String.IsEqual(Window(10000).Property(redlight.external_scraper.multi_search),true)</visible>
                           <property name="setting_label">Multi-Scraper Search</property>
@@ -1873,7 +1877,7 @@
                           <onclick>noop</onclick>
                       </item>
                       <item>
-                          <visible>Container(2000).HasFocus(60)</visible>
+                          <visible>Container(2000).HasFocus(61)</visible>
                           <visible>String.IsEqual(Window(10000).Property(redlight.provider.external),true)</visible>
                           <visible>String.IsEqual(Window(10000).Property(redlight.external_scraper.multi_search),true)</visible>
                           <property name="setting_label">Search Mode</property>
@@ -1883,14 +1887,14 @@
                           <onclick>RunPlugin(plugin://plugin.video.redlight/?mode=settings_manager.set_from_list&amp;setting_id=external_scraper.run_mode)</onclick>
                       </item>
                       <item>
-                          <visible>Container(2000).HasFocus(60)</visible>
+                          <visible>Container(2000).HasFocus(61)</visible>
                           <visible>String.IsEqual(Window(10000).Property(redlight.provider.external),true)</visible>
                           <property name="setting_label">External Scraper Slot 1</property>
                           <property name="setting_type">separator</property>
                           <onclick>noop</onclick>
                       </item>
                       <item>
-                          <visible>Container(2000).HasFocus(60)</visible>
+                          <visible>Container(2000).HasFocus(61)</visible>
                           <visible>String.IsEqual(Window(10000).Property(redlight.provider.external),true)</visible>
                           <visible>!String.IsEqual(Window(10000).Property(redlight.external_scraper.slot1.module),empty_setting)</visible>
                           <property name="setting_label">Enable Slot 1</property>
@@ -1900,7 +1904,7 @@
                           <onclick>RunPlugin(plugin://plugin.video.redlight/?mode=settings_manager.set_boolean&amp;setting_id=external_scraper.slot1.enabled)</onclick>
                       </item>
                       <item>
-                          <visible>Container(2000).HasFocus(60)</visible>
+                          <visible>Container(2000).HasFocus(61)</visible>
                           <visible>String.IsEqual(Window(10000).Property(redlight.provider.external),true)</visible>
                           <property name="setting_label">Choose Module (Slot 1)</property>
                           <property name="setting_type">action</property>
@@ -1909,7 +1913,7 @@
                           <onclick>RunPlugin(plugin://plugin.video.redlight/?mode=external_scraper_choice&amp;slot=1)</onclick>
                       </item>
                       <item>
-                          <visible>Container(2000).HasFocus(60)</visible>
+                          <visible>Container(2000).HasFocus(61)</visible>
                           <visible>String.IsEqual(Window(10000).Property(redlight.provider.external),true)</visible>
                           <visible>!String.IsEqual(Window(10000).Property(redlight.external_scraper.slot1.module),empty_setting)</visible>
                           <visible>String.IsEqual(Window(10000).Property(redlight.external_scraper.slot1.enabled),true)</visible>
@@ -1921,7 +1925,7 @@
                           <onclick>RunPlugin(plugin://plugin.video.redlight/?mode=open_external_scraper_settings&amp;slot=1)</onclick>
                       </item>
                       <item>
-                          <visible>Container(2000).HasFocus(60)</visible>
+                          <visible>Container(2000).HasFocus(61)</visible>
                           <visible>String.IsEqual(Window(10000).Property(redlight.provider.external),true)</visible>
                           <visible>!String.IsEqual(Window(10000).Property(redlight.external_scraper.slot1.module),empty_setting)</visible>
                           <visible>String.IsEqual(Window(10000).Property(redlight.external_scraper.slot1.enabled),true)</visible>
@@ -1932,14 +1936,14 @@
                           <onclick>RunPlugin(plugin://plugin.video.redlight/?mode=external_scraper_clear_slot&amp;slot=1)</onclick>
                       </item>
                       <item>
-                          <visible>Container(2000).HasFocus(60)</visible>
+                          <visible>Container(2000).HasFocus(61)</visible>
                           <visible>String.IsEqual(Window(10000).Property(redlight.provider.external),true)</visible>
                           <property name="setting_label">External Scraper Slot 2</property>
                           <property name="setting_type">separator</property>
                           <onclick>noop</onclick>
                       </item>
                       <item>
-                          <visible>Container(2000).HasFocus(60)</visible>
+                          <visible>Container(2000).HasFocus(61)</visible>
                           <visible>String.IsEqual(Window(10000).Property(redlight.provider.external),true)</visible>
                           <visible>!String.IsEqual(Window(10000).Property(redlight.external_scraper.slot2.module),empty_setting)</visible>
                           <property name="setting_label">Enable Slot 2</property>
@@ -1949,7 +1953,7 @@
                           <onclick>RunPlugin(plugin://plugin.video.redlight/?mode=settings_manager.set_boolean&amp;setting_id=external_scraper.slot2.enabled)</onclick>
                       </item>
                       <item>
-                          <visible>Container(2000).HasFocus(60)</visible>
+                          <visible>Container(2000).HasFocus(61)</visible>
                           <visible>String.IsEqual(Window(10000).Property(redlight.provider.external),true)</visible>
                           <property name="setting_label">Choose Module (Slot 2)</property>
                           <property name="setting_type">action</property>
@@ -1958,7 +1962,7 @@
                           <onclick>RunPlugin(plugin://plugin.video.redlight/?mode=external_scraper_choice&amp;slot=2)</onclick>
                       </item>
                       <item>
-                          <visible>Container(2000).HasFocus(60)</visible>
+                          <visible>Container(2000).HasFocus(61)</visible>
                           <visible>String.IsEqual(Window(10000).Property(redlight.provider.external),true)</visible>
                           <visible>!String.IsEqual(Window(10000).Property(redlight.external_scraper.slot2.module),empty_setting)</visible>
                           <visible>String.IsEqual(Window(10000).Property(redlight.external_scraper.slot2.enabled),true)</visible>
@@ -1970,7 +1974,7 @@
                           <onclick>RunPlugin(plugin://plugin.video.redlight/?mode=open_external_scraper_settings&amp;slot=2)</onclick>
                       </item>
                       <item>
-                          <visible>Container(2000).HasFocus(60)</visible>
+                          <visible>Container(2000).HasFocus(61)</visible>
                           <visible>String.IsEqual(Window(10000).Property(redlight.provider.external),true)</visible>
                           <visible>!String.IsEqual(Window(10000).Property(redlight.external_scraper.slot2.module),empty_setting)</visible>
                           <visible>String.IsEqual(Window(10000).Property(redlight.external_scraper.slot2.enabled),true)</visible>
@@ -1981,7 +1985,7 @@
                           <onclick>RunPlugin(plugin://plugin.video.redlight/?mode=external_scraper_move_slot&amp;slot=2&amp;direction=up)</onclick>
                       </item>
                       <item>
-                          <visible>Container(2000).HasFocus(60)</visible>
+                          <visible>Container(2000).HasFocus(61)</visible>
                           <visible>String.IsEqual(Window(10000).Property(redlight.provider.external),true)</visible>
                           <visible>!String.IsEqual(Window(10000).Property(redlight.external_scraper.slot2.module),empty_setting)</visible>
                           <visible>String.IsEqual(Window(10000).Property(redlight.external_scraper.slot2.enabled),true)</visible>
@@ -1992,14 +1996,14 @@
                           <onclick>RunPlugin(plugin://plugin.video.redlight/?mode=external_scraper_clear_slot&amp;slot=2)</onclick>
                       </item>
                       <item>
-                          <visible>Container(2000).HasFocus(60)</visible>
+                          <visible>Container(2000).HasFocus(61)</visible>
                           <visible>String.IsEqual(Window(10000).Property(redlight.provider.external),true)</visible>
                           <property name="setting_label">External Scraper Slot 3</property>
                           <property name="setting_type">separator</property>
                           <onclick>noop</onclick>
                       </item>
                       <item>
-                          <visible>Container(2000).HasFocus(60)</visible>
+                          <visible>Container(2000).HasFocus(61)</visible>
                           <visible>String.IsEqual(Window(10000).Property(redlight.provider.external),true)</visible>
                           <visible>!String.IsEqual(Window(10000).Property(redlight.external_scraper.slot3.module),empty_setting)</visible>
                           <property name="setting_label">Enable Slot 3</property>
@@ -2009,7 +2013,7 @@
                           <onclick>RunPlugin(plugin://plugin.video.redlight/?mode=settings_manager.set_boolean&amp;setting_id=external_scraper.slot3.enabled)</onclick>
                       </item>
                       <item>
-                          <visible>Container(2000).HasFocus(60)</visible>
+                          <visible>Container(2000).HasFocus(61)</visible>
                           <visible>String.IsEqual(Window(10000).Property(redlight.provider.external),true)</visible>
                           <property name="setting_label">Choose Module (Slot 3)</property>
                           <property name="setting_type">action</property>
@@ -2018,7 +2022,7 @@
                           <onclick>RunPlugin(plugin://plugin.video.redlight/?mode=external_scraper_choice&amp;slot=3)</onclick>
                       </item>
                       <item>
-                          <visible>Container(2000).HasFocus(60)</visible>
+                          <visible>Container(2000).HasFocus(61)</visible>
                           <visible>String.IsEqual(Window(10000).Property(redlight.provider.external),true)</visible>
                           <visible>!String.IsEqual(Window(10000).Property(redlight.external_scraper.slot3.module),empty_setting)</visible>
                           <visible>String.IsEqual(Window(10000).Property(redlight.external_scraper.slot3.enabled),true)</visible>
@@ -2030,7 +2034,7 @@
                           <onclick>RunPlugin(plugin://plugin.video.redlight/?mode=open_external_scraper_settings&amp;slot=3)</onclick>
                       </item>
                       <item>
-                          <visible>Container(2000).HasFocus(60)</visible>
+                          <visible>Container(2000).HasFocus(61)</visible>
                           <visible>String.IsEqual(Window(10000).Property(redlight.provider.external),true)</visible>
                           <visible>!String.IsEqual(Window(10000).Property(redlight.external_scraper.slot3.module),empty_setting)</visible>
                           <visible>String.IsEqual(Window(10000).Property(redlight.external_scraper.slot3.enabled),true)</visible>
@@ -2041,7 +2045,7 @@
                           <onclick>RunPlugin(plugin://plugin.video.redlight/?mode=external_scraper_move_slot&amp;slot=3&amp;direction=up)</onclick>
                       </item>
                       <item>
-                          <visible>Container(2000).HasFocus(60)</visible>
+                          <visible>Container(2000).HasFocus(61)</visible>
                           <visible>String.IsEqual(Window(10000).Property(redlight.provider.external),true)</visible>
                           <visible>!String.IsEqual(Window(10000).Property(redlight.external_scraper.slot3.module),empty_setting)</visible>
                           <visible>String.IsEqual(Window(10000).Property(redlight.external_scraper.slot3.enabled),true)</visible>
@@ -2051,15 +2055,140 @@
                           <property name="setting_description">Remove the scraper module from slot 3.</property>
                           <onclick>RunPlugin(plugin://plugin.video.redlight/?mode=external_scraper_clear_slot&amp;slot=3)</onclick>
                       </item>
+        <!-- AIOStreams (hidden while aiostreams_api.ENABLED is false) -->
+                      <item>
+                          <visible>Container(2000).HasFocus(62)</visible>
+                          <visible>String.IsEqual(Window(10000).Property(redlight.aiostreams.available),true)</visible>
+                          <property name="setting_label">AIOStreams</property>
+                          <property name="setting_type">separator</property>
+                          <onclick>noop</onclick>
+                      </item>
+                      <item>
+                          <visible>Container(2000).HasFocus(62)</visible>
+                          <visible>String.IsEqual(Window(10000).Property(redlight.aiostreams.available),true)</visible>
+                          <property name="setting_label">Enable</property>
+                          <property name="setting_type">boolean</property>
+                          <property name="setting_value">$INFO[Window(10000).Property(redlight.provider.aiostreams)]</property>
+                          <property name="setting_description">Enable AIOStreams as an optional source provider alongside Debrid, EasyNews, and external scrapers. Requires your AIOStreams instance username and password (HTTP Basic Auth).</property>
+                          <onclick>RunPlugin(plugin://plugin.video.redlight/?mode=settings_manager.set_boolean&amp;setting_id=provider.aiostreams)</onclick>
+                      </item>
+                      <item>
+                          <visible>Container(2000).HasFocus(62)</visible>
+                          <visible>String.IsEqual(Window(10000).Property(redlight.aiostreams.available),true)</visible>
+                          <visible>String.IsEqual(Window(10000).Property(redlight.provider.aiostreams),true)</visible>
+                          <property name="setting_label">Instance</property>
+                          <property name="setting_type">action</property>
+                          <property name="setting_value">$INFO[Window(10000).Property(redlight.aiostreams.instance_name)]</property>
+                          <property name="setting_description">Each preset shows its base URL in the picker and below. UUID and password are remembered per instance when you switch presets. Choose Custom to enter your own base URL.</property>
+                          <onclick>RunPlugin(plugin://plugin.video.redlight/?mode=settings_manager.set_from_list&amp;setting_id=aiostreams.instance)</onclick>
+                      </item>
+                      <item>
+                          <visible>Container(2000).HasFocus(62)</visible>
+                          <visible>String.IsEqual(Window(10000).Property(redlight.aiostreams.available),true)</visible>
+                          <visible>String.IsEqual(Window(10000).Property(redlight.provider.aiostreams),true)</visible>
+                          <visible>!String.IsEqual(Window(10000).Property(redlight.aiostreams.instance),4)</visible>
+                          <property name="setting_label">    - Active base URL</property>
+                          <property name="setting_type">action</property>
+                          <property name="setting_value">$INFO[Window(10000).Property(redlight.aiostreams.base_url)]</property>
+                          <property name="setting_description">The base URL Red Light uses for /api/v1/search on this scrape. Updates when you change Instance. API calls go to this host plus /api/v1/search.</property>
+                          <onclick>noop</onclick>
+                      </item>
+                      <item>
+                          <visible>Container(2000).HasFocus(62)</visible>
+                          <visible>String.IsEqual(Window(10000).Property(redlight.aiostreams.available),true)</visible>
+                          <visible>String.IsEqual(Window(10000).Property(redlight.provider.aiostreams),true)</visible>
+                          <visible>String.IsEqual(Window(10000).Property(redlight.aiostreams.instance),4)</visible>
+                          <property name="setting_label">    - Custom URL</property>
+                          <property name="setting_type">numeric</property>
+                          <property name="setting_value">$INFO[Window(10000).Property(redlight.aiostreams.custom_url)]</property>
+                          <property name="setting_description">Base URL for your custom AIOStreams instance (no trailing slash), e.g. https://aiostreams.example.com</property>
+                          <onclick>RunPlugin(plugin://plugin.video.redlight/?mode=settings_manager.set_string&amp;setting_id=aiostreams.custom_url)</onclick>
+                      </item>
+                      <item>
+                          <visible>Container(2000).HasFocus(62)</visible>
+                          <visible>String.IsEqual(Window(10000).Property(redlight.aiostreams.available),true)</visible>
+                          <visible>String.IsEqual(Window(10000).Property(redlight.provider.aiostreams),true)</visible>
+                          <property name="setting_label">Username</property>
+                          <property name="setting_type">numeric</property>
+                          <property name="setting_value">$INFO[Window(10000).Property(redlight.aiostreams.username)]</property>
+                          <property name="setting_description">HTTP Basic Auth username for your AIOStreams instance.</property>
+                          <onclick>RunPlugin(plugin://plugin.video.redlight/?mode=settings_manager.set_string&amp;setting_id=aiostreams.username)</onclick>
+                      </item>
+                      <item>
+                          <visible>Container(2000).HasFocus(62)</visible>
+                          <visible>String.IsEqual(Window(10000).Property(redlight.aiostreams.available),true)</visible>
+                          <visible>String.IsEqual(Window(10000).Property(redlight.provider.aiostreams),true)</visible>
+                          <property name="setting_label">Password</property>
+                          <property name="setting_type">password</property>
+                          <property name="setting_value">$INFO[Window(10000).Property(redlight.aiostreams.password)]</property>
+                          <property name="setting_description">HTTP Basic Auth password for your AIOStreams instance.</property>
+                          <onclick>RunPlugin(plugin://plugin.video.redlight/?mode=settings_manager.set_string&amp;setting_id=aiostreams.password)</onclick>
+                      </item>
+                      <item>
+                          <visible>Container(2000).HasFocus(62)</visible>
+                          <visible>String.IsEqual(Window(10000).Property(redlight.aiostreams.available),true)</visible>
+                          <visible>String.IsEqual(Window(10000).Property(redlight.provider.aiostreams),true)</visible>
+                          <visible>![String.IsEmpty(Window(10000).Property(redlight.aiostreams.username)) + String.IsEmpty(Window(10000).Property(redlight.aiostreams.password))]</visible>
+                          <property name="setting_label">Filter Results by Name</property>
+                          <property name="setting_type">boolean</property>
+                          <property name="setting_value">$INFO[Window(10000).Property(redlight.aiostreams.title_filter)]</property>
+                          <property name="setting_description">After AIOStreams returns results, match filenames against the movie or episode title (and aliases). Disable if valid links go missing.</property>
+                          <onclick>RunPlugin(plugin://plugin.video.redlight/?mode=settings_manager.set_boolean&amp;setting_id=aiostreams.title_filter)</onclick>
+                      </item>
+                      <item>
+                          <visible>Container(2000).HasFocus(62)</visible>
+                          <visible>String.IsEqual(Window(10000).Property(redlight.aiostreams.available),true)</visible>
+                          <visible>String.IsEqual(Window(10000).Property(redlight.provider.aiostreams),true)</visible>
+                          <visible>![String.IsEmpty(Window(10000).Property(redlight.aiostreams.username)) + String.IsEmpty(Window(10000).Property(redlight.aiostreams.password))]</visible>
+                          <property name="setting_label">Preserve Instance Sort Order</property>
+                          <property name="setting_type">boolean</property>
+                          <property name="setting_value">$INFO[Window(10000).Property(redlight.aiostreams.preserve_order)]</property>
+                          <property name="setting_description">Keep the order returned by your AIOStreams instance (filters and sorting configured in AIOStreams). Red Light quality, size, and audio filters are skipped for AIO rows when enabled.</property>
+                          <onclick>RunPlugin(plugin://plugin.video.redlight/?mode=settings_manager.set_boolean&amp;setting_id=aiostreams.preserve_order)</onclick>
+                      </item>
+                      <item>
+                          <visible>Container(2000).HasFocus(62)</visible>
+                          <visible>String.IsEqual(Window(10000).Property(redlight.aiostreams.available),true)</visible>
+                          <visible>String.IsEqual(Window(10000).Property(redlight.provider.aiostreams),true)</visible>
+                          <visible>![String.IsEmpty(Window(10000).Property(redlight.aiostreams.username)) + String.IsEmpty(Window(10000).Property(redlight.aiostreams.password))]</visible>
+                          <property name="setting_label">Check Before Full Search</property>
+                          <property name="setting_type">boolean</property>
+                          <property name="setting_value">$INFO[Window(10000).Property(redlight.check.aiostreams)]</property>
+                          <property name="setting_description">Query AIOStreams early in the source search, before external torrent scrapers and the rest of the internal scrape list finish. Does not replace other providers — the full source search continues afterward. Pair with Autoplay Result below (shown when Check Before Full Search is enabled) to autoplay a prescrape hit from this source.</property>
+                          <onclick>RunPlugin(plugin://plugin.video.redlight/?mode=settings_manager.set_boolean&amp;setting_id=check.aiostreams)</onclick>
+                      </item>
+                      <item>
+                          <visible>Container(2000).HasFocus(62)</visible>
+                          <visible>String.IsEqual(Window(10000).Property(redlight.aiostreams.available),true)</visible>
+                          <visible>String.IsEqual(Window(10000).Property(redlight.provider.aiostreams),true)</visible>
+                          <visible>![String.IsEmpty(Window(10000).Property(redlight.aiostreams.username)) + String.IsEmpty(Window(10000).Property(redlight.aiostreams.password))]</visible>
+                          <visible>String.IsEqual(Window(10000).Property(redlight.check.aiostreams),true)</visible>
+                          <property name="setting_label">    - Autoplay Result</property>
+                          <property name="setting_type">boolean</property>
+                          <property name="setting_value">$INFO[Window(10000).Property(redlight.autoplay.aiostreams)]</property>
+                          <property name="setting_description">When Check Before Full Search is enabled, autoplay the top AIOStreams result found during prescrape instead of opening the results list. Requires Autoplay under Playback > Movies or Episodes, and respects Limit Autoplay Quality there.</property>
+                          <onclick>RunPlugin(plugin://plugin.video.redlight/?mode=settings_manager.set_boolean&amp;setting_id=autoplay.aiostreams)</onclick>
+                      </item>
+                      <item>
+                          <visible>Container(2000).HasFocus(62)</visible>
+                          <visible>String.IsEqual(Window(10000).Property(redlight.aiostreams.available),true)</visible>
+                          <visible>String.IsEqual(Window(10000).Property(redlight.provider.aiostreams),true)</visible>
+                          <visible>![String.IsEmpty(Window(10000).Property(redlight.aiostreams.username)) + String.IsEmpty(Window(10000).Property(redlight.aiostreams.password))]</visible>
+                          <property name="setting_label">Priority (Lower Number Equals Higher Priority)</property>
+                          <property name="setting_type">numeric</property>
+                          <property name="setting_value">$INFO[Window(10000).Property(redlight.aio.priority)]</property>
+                          <property name="setting_description">Choose the order in which AIOStreams results appear in relation to any other active accounts. The lower the number, the higher the sort order.</property>
+                          <onclick>RunPlugin(plugin://plugin.video.redlight/?mode=settings_manager.set_numeric&amp;setting_id=aio.priority)</onclick>
+                      </item>
         <!-- All Debrid -->
                      <item>
-                         <visible>Container(2000).HasFocus(60)</visible>
+                         <visible>Container(2000).HasFocus(61)</visible>
                          <property name="setting_label">All Debrid</property>
                           <property name="setting_type">separator</property>
                           <onclick>noop</onclick>
                       </item>
                       <item>
-                          <visible>Container(2000).HasFocus(60)</visible>
+                          <visible>Container(2000).HasFocus(61)</visible>
                           <visible>String.IsEqual(Window(10000).Property(redlight.ad.token),empty_setting)</visible>
                           <property name="setting_label">Authorise</property>
                           <property name="setting_type">action</property>
@@ -2068,7 +2197,7 @@
                           <onclick>RunPlugin(plugin://plugin.video.redlight/?mode=alldebrid.authenticate)</onclick>
                       </item>
                       <item>
-                          <visible>Container(2000).HasFocus(60)</visible>
+                          <visible>Container(2000).HasFocus(61)</visible>
                           <visible>!String.IsEqual(Window(10000).Property(redlight.ad.token),empty_setting)</visible>
                           <property name="setting_label">Enable</property>
                           <property name="setting_type">boolean</property>
@@ -2077,7 +2206,7 @@
                           <onclick>RunPlugin(plugin://plugin.video.redlight/?mode=settings_manager.set_boolean&amp;setting_id=ad.enabled)</onclick>
                       </item>
                       <item>
-                          <visible>Container(2000).HasFocus(60)</visible>
+                          <visible>Container(2000).HasFocus(61)</visible>
                           <visible>!String.IsEqual(Window(10000).Property(redlight.ad.token),empty_setting)</visible>
                           <visible>String.IsEqual(Window(10000).Property(redlight.ad.enabled),true)</visible>
                           <property name="setting_label">Revoke Authorisation</property>
@@ -2087,7 +2216,7 @@
                           <onclick>RunPlugin(plugin://plugin.video.redlight/?mode=alldebrid.revoke_authentication)</onclick>
                       </item>
                       <item>
-                          <visible>Container(2000).HasFocus(60)</visible>
+                          <visible>Container(2000).HasFocus(61)</visible>
                           <visible>!String.IsEqual(Window(10000).Property(redlight.ad.token),empty_setting)</visible>
                           <visible>String.IsEqual(Window(10000).Property(redlight.ad.enabled),true)</visible>
                           <property name="setting_label">Add Resolved Debrid Cache to Cloud</property>
@@ -2097,7 +2226,7 @@
                           <onclick>RunPlugin(plugin://plugin.video.redlight/?mode=settings_manager.set_from_list&amp;setting_id=store_resolved_to_cloud.alldebrid)</onclick>
                       </item>
                       <item>
-                          <visible>Container(2000).HasFocus(60)</visible>
+                          <visible>Container(2000).HasFocus(61)</visible>
                           <visible>!String.IsEqual(Window(10000).Property(redlight.ad.token),empty_setting)</visible>
                           <visible>String.IsEqual(Window(10000).Property(redlight.ad.enabled),true)</visible>
                           <property name="setting_label">Search Cloud Storage</property>
@@ -2107,7 +2236,7 @@
                           <onclick>RunPlugin(plugin://plugin.video.redlight/?mode=settings_manager.set_boolean&amp;setting_id=provider.ad_cloud)</onclick>
                       </item>
                       <item>
-                          <visible>Container(2000).HasFocus(60)</visible>
+                          <visible>Container(2000).HasFocus(61)</visible>
                           <visible>!String.IsEqual(Window(10000).Property(redlight.ad.token),empty_setting)</visible>
                           <visible>String.IsEqual(Window(10000).Property(redlight.ad.enabled),true)</visible>
                           <visible>String.IsEqual(Window(10000).Property(redlight.provider.ad_cloud),true)</visible>
@@ -2118,18 +2247,18 @@
                           <onclick>RunPlugin(plugin://plugin.video.redlight/?mode=settings_manager.set_boolean&amp;setting_id=ad_cloud.title_filter)</onclick>
                       </item>
                       <item>
-                          <visible>Container(2000).HasFocus(60)</visible>
+                          <visible>Container(2000).HasFocus(61)</visible>
                           <visible>!String.IsEqual(Window(10000).Property(redlight.ad.token),empty_setting)</visible>
                           <visible>String.IsEqual(Window(10000).Property(redlight.ad.enabled),true)</visible>
                           <visible>String.IsEqual(Window(10000).Property(redlight.provider.ad_cloud),true)</visible>
                           <property name="setting_label">    - Check Before Full Search</property>
                           <property name="setting_type">boolean</property>
                           <property name="setting_value">$INFO[Window(10000).Property(redlight.check.ad_cloud)]</property>
-                          <property name="setting_description">Enable this and Red Light will search for results in your All Debrid Cloud before checking other enabled scrapers</property>
+                          <property name="setting_description">Search your All Debrid cloud early in the source search, before external torrent scrapers and the rest of the internal scrape list finish. Does not replace other providers — the full source search continues afterward. Pair with Autoplay Cloud Result below (shown when Check Before Full Search is enabled) to autoplay a prescrape hit from this source.</property>
                           <onclick>RunPlugin(plugin://plugin.video.redlight/?mode=settings_manager.set_boolean&amp;setting_id=check.ad_cloud)</onclick>
                       </item>
                       <item>
-                          <visible>Container(2000).HasFocus(60)</visible>
+                          <visible>Container(2000).HasFocus(61)</visible>
                           <visible>!String.IsEqual(Window(10000).Property(redlight.ad.token),empty_setting)</visible>
                           <visible>String.IsEqual(Window(10000).Property(redlight.ad.enabled),true)</visible>
                           <visible>String.IsEqual(Window(10000).Property(redlight.provider.ad_cloud),true)</visible>
@@ -2137,11 +2266,11 @@
                           <property name="setting_label">    - Autoplay Cloud Result</property>
                           <property name="setting_type">boolean</property>
                           <property name="setting_value">$INFO[Window(10000).Property(redlight.autoplay.ad_cloud)]</property>
-                          <property name="setting_description">Enable this and Red Light will Autoplay the top result found from the All Debrid Cloud</property>
+                          <property name="setting_description">When Check Before Full Search is enabled, autoplay the top All Debrid cloud result found during prescrape instead of opening the results list. Requires Autoplay under Playback > Movies or Episodes, and respects Limit Autoplay Quality there.</property>
                           <onclick>RunPlugin(plugin://plugin.video.redlight/?mode=settings_manager.set_boolean&amp;setting_id=autoplay.ad_cloud)</onclick>
                       </item>
                       <item>
-                          <visible>Container(2000).HasFocus(60)</visible>
+                          <visible>Container(2000).HasFocus(61)</visible>
                           <visible>!String.IsEqual(Window(10000).Property(redlight.ad.token),empty_setting)</visible>
                           <visible>String.IsEqual(Window(10000).Property(redlight.ad.enabled),true)</visible>
                           <visible>String.IsEqual(Window(10000).Property(redlight.provider.ad_cloud),true)</visible>
@@ -2152,7 +2281,7 @@
                           <onclick>RunPlugin(plugin://plugin.video.redlight/?mode=settings_manager.set_boolean&amp;setting_id=results.sort_adcloud_first)</onclick>
                       </item>
                       <item>
-                          <visible>Container(2000).HasFocus(60)</visible>
+                          <visible>Container(2000).HasFocus(61)</visible>
                           <visible>!String.IsEqual(Window(10000).Property(redlight.ad.token),empty_setting)</visible>
                           <visible>String.IsEqual(Window(10000).Property(redlight.ad.enabled),true)</visible>
                           <property name="setting_label">Priority (Lower Number Equals Higher Priority)</property>
@@ -2196,13 +2325,13 @@
                       </item>
         <!-- EasyNews -->
                       <item>
-                          <visible>Container(2000).HasFocus(60)</visible>
+                          <visible>Container(2000).HasFocus(62)</visible>
                           <property name="setting_label">EasyNews</property>
                           <property name="setting_type">separator</property>
                           <onclick>noop</onclick>
                       </item>
                       <item>
-                          <visible>Container(2000).HasFocus(60)</visible>
+                          <visible>Container(2000).HasFocus(62)</visible>
                           <property name="setting_label">Enable</property>
                           <property name="setting_type">boolean</property>
                           <property name="setting_value">$INFO[Window(10000).Property(redlight.provider.easynews)]</property>
@@ -2210,7 +2339,7 @@
                           <onclick>RunPlugin(plugin://plugin.video.redlight/?mode=settings_manager.set_boolean&amp;setting_id=provider.easynews)</onclick>
                       </item>
                       <item>
-                          <visible>Container(2000).HasFocus(60)</visible>
+                          <visible>Container(2000).HasFocus(62)</visible>
                           <visible>String.IsEqual(Window(10000).Property(redlight.provider.easynews),true)</visible>
                           <property name="setting_label">Login</property>
                           <property name="setting_type">numeric</property>
@@ -2219,7 +2348,7 @@
                           <onclick>RunPlugin(plugin://plugin.video.redlight/?mode=settings_manager.set_string&amp;setting_id=easynews_user)</onclick>
                       </item>
                       <item>
-                          <visible>Container(2000).HasFocus(60)</visible>
+                          <visible>Container(2000).HasFocus(62)</visible>
                           <visible>String.IsEqual(Window(10000).Property(redlight.provider.easynews),true)</visible>
                           <property name="setting_label">Password</property>
                           <property name="setting_type">password</property>
@@ -2228,7 +2357,7 @@
                           <onclick>RunPlugin(plugin://plugin.video.redlight/?mode=settings_manager.set_string&amp;setting_id=easynews_password)</onclick>
                       </item>
                       <item>
-                          <visible>Container(2000).HasFocus(60)</visible>
+                          <visible>Container(2000).HasFocus(62)</visible>
                           <visible>String.IsEqual(Window(10000).Property(redlight.provider.easynews),true)</visible>
                           <visible>![String.IsEmpty(Window(10000).Property(redlight.easynews_user)) + String.IsEmpty(Window(10000).Property(redlight.easynews_password))]</visible>
                           <property name="setting_label">Filter Results by Name</property>
@@ -2238,7 +2367,7 @@
                           <onclick>RunPlugin(plugin://plugin.video.redlight/?mode=settings_manager.set_boolean&amp;setting_id=easynews.title_filter)</onclick>
                       </item>
                       <item>
-                          <visible>Container(2000).HasFocus(60)</visible>
+                          <visible>Container(2000).HasFocus(62)</visible>
                           <visible>String.IsEqual(Window(10000).Property(redlight.provider.easynews),true)</visible>
                           <visible>![String.IsEmpty(Window(10000).Property(redlight.easynews_user)) + String.IsEmpty(Window(10000).Property(redlight.easynews_password))]</visible>
                           <property name="setting_label">Filter Languages</property>
@@ -2248,7 +2377,7 @@
                           <onclick>RunPlugin(plugin://plugin.video.redlight/?mode=settings_manager.set_boolean&amp;setting_id=easynews.filter_lang)</onclick>
                       </item>
                       <item>
-                          <visible>Container(2000).HasFocus(60)</visible>
+                          <visible>Container(2000).HasFocus(62)</visible>
                           <visible>String.IsEqual(Window(10000).Property(redlight.provider.easynews),true)</visible>
                           <visible>![String.IsEmpty(Window(10000).Property(redlight.easynews_user)) + String.IsEmpty(Window(10000).Property(redlight.easynews_password))]</visible>
                           <property name="setting_label">Exclude Adult Results</property>
@@ -2258,7 +2387,7 @@
                           <onclick>RunPlugin(plugin://plugin.video.redlight/?mode=settings_manager.set_boolean&amp;setting_id=easynews.exclude_adult)</onclick>
                       </item>
                       <item>
-                          <visible>Container(2000).HasFocus(60)</visible>
+                          <visible>Container(2000).HasFocus(62)</visible>
                           <visible>String.IsEqual(Window(10000).Property(redlight.provider.easynews),true)</visible>
                           <visible>![String.IsEmpty(Window(10000).Property(redlight.easynews_user)) + String.IsEmpty(Window(10000).Property(redlight.easynews_password))]</visible>
                           <visible>String.IsEqual(Window(10000).Property(redlight.easynews.filter_lang),true)</visible>
@@ -2269,7 +2398,7 @@
                           <onclick>RunPlugin(plugin://plugin.video.redlight/?mode=set_language_filter_choice&amp;filter_setting_id=easynews.lang_filters&amp;multi_choice=true)</onclick>
                       </item>
                       <item>
-                          <visible>Container(2000).HasFocus(60)</visible>
+                          <visible>Container(2000).HasFocus(62)</visible>
                           <visible>String.IsEqual(Window(10000).Property(redlight.provider.easynews),true)</visible>
                           <visible>![String.IsEmpty(Window(10000).Property(redlight.easynews_user)) + String.IsEmpty(Window(10000).Property(redlight.easynews_password))]</visible>
                           <visible>String.IsEqual(Window(10000).Property(redlight.easynews.filter_lang),true)</visible>
@@ -2280,7 +2409,7 @@
                           <onclick>RunPlugin(plugin://plugin.video.redlight/?mode=settings_manager.set_boolean&amp;setting_id=easynews.lang_include_unknown)</onclick>
                       </item>
                       <item>
-                          <visible>Container(2000).HasFocus(60)</visible>
+                          <visible>Container(2000).HasFocus(62)</visible>
                           <visible>String.IsEqual(Window(10000).Property(redlight.provider.easynews),true)</visible>
                           <visible>![String.IsEmpty(Window(10000).Property(redlight.easynews_user)) + String.IsEmpty(Window(10000).Property(redlight.easynews_password))]</visible>
                           <property name="setting_label">Refresh Credentials Each Request</property>
@@ -2290,7 +2419,7 @@
                           <onclick>RunPlugin(plugin://plugin.video.redlight/?mode=settings_manager.set_boolean&amp;setting_id=easynews.refresh_credentials)</onclick>
                       </item>
                       <item>
-                          <visible>Container(2000).HasFocus(60)</visible>
+                          <visible>Container(2000).HasFocus(62)</visible>
                           <visible>String.IsEqual(Window(10000).Property(redlight.provider.easynews),true)</visible>
                           <visible>![String.IsEmpty(Window(10000).Property(redlight.easynews_user)) + String.IsEmpty(Window(10000).Property(redlight.easynews_password))]</visible>
                           <property name="setting_label">Fallback Search Queries</property>
@@ -2300,7 +2429,7 @@
                           <onclick>RunPlugin(plugin://plugin.video.redlight/?mode=settings_manager.set_boolean&amp;setting_id=easynews.fallback_search)</onclick>
                       </item>
                       <item>
-                          <visible>Container(2000).HasFocus(60)</visible>
+                          <visible>Container(2000).HasFocus(62)</visible>
                           <visible>String.IsEqual(Window(10000).Property(redlight.provider.easynews),true)</visible>
                           <visible>![String.IsEmpty(Window(10000).Property(redlight.easynews_user)) + String.IsEmpty(Window(10000).Property(redlight.easynews_password))]</visible>
                           <property name="setting_label">Search Width</property>
@@ -2310,28 +2439,28 @@
                           <onclick>RunPlugin(plugin://plugin.video.redlight/?mode=settings_manager.set_from_list&amp;setting_id=easynews.search_width)</onclick>
                       </item>
                       <item>
-                          <visible>Container(2000).HasFocus(60)</visible>
+                          <visible>Container(2000).HasFocus(62)</visible>
                           <visible>String.IsEqual(Window(10000).Property(redlight.provider.easynews),true)</visible>
                           <visible>![String.IsEmpty(Window(10000).Property(redlight.easynews_user)) + String.IsEmpty(Window(10000).Property(redlight.easynews_password))]</visible>
                           <property name="setting_label">Check Before Full Search</property>
                           <property name="setting_type">boolean</property>
                           <property name="setting_value">$INFO[Window(10000).Property(redlight.check.easynews)]</property>
-                          <property name="setting_description">Query EasyNews early in the source search, before external torrent scrapers and the rest of the internal scrape list. The progress window can show EasyNews quality counts (4K, 1080p, etc.) while torrent scrapers are still running. If EasyNews returns results during this prescrape step, you may get playable links sooner instead of waiting for the full scrape to finish. Does not replace external scrapers — it runs EasyNews first, then the normal search continues. Often used in conjunction with Autoplay Result, below (when Check Before Full Search is enabled).</property>
+                          <property name="setting_description">Query EasyNews early in the source search, before external torrent scrapers and the rest of the internal scrape list. The progress window can show EasyNews quality counts (4K, 1080p, etc.) while torrent scrapers are still running. If EasyNews returns results during prescrape, you may get playable links sooner instead of waiting for the full scrape to finish. Does not replace other providers — the full source search continues afterward. Pair with Autoplay Result below (shown when Check Before Full Search is enabled) to autoplay a prescrape hit from this source.</property>
                           <onclick>RunPlugin(plugin://plugin.video.redlight/?mode=settings_manager.set_boolean&amp;setting_id=check.easynews)</onclick>
                       </item>
                       <item>
-                          <visible>Container(2000).HasFocus(60)</visible>
+                          <visible>Container(2000).HasFocus(62)</visible>
                           <visible>String.IsEqual(Window(10000).Property(redlight.provider.easynews),true)</visible>
                           <visible>![String.IsEmpty(Window(10000).Property(redlight.easynews_user)) + String.IsEmpty(Window(10000).Property(redlight.easynews_password))]</visible>
                           <visible>String.IsEqual(Window(10000).Property(redlight.check.easynews),true)</visible>
                           <property name="setting_label">    - Autoplay Result</property>
                           <property name="setting_type">boolean</property>
                           <property name="setting_value">$INFO[Window(10000).Property(redlight.autoplay.easynews)]</property>
-                          <property name="setting_description">Enable this and Red Light will Autoplay the top result found from EasyNews</property>
+                          <property name="setting_description">When Check Before Full Search is enabled, autoplay the top EasyNews result found during prescrape instead of opening the results list. Requires Autoplay under Playback > Movies or Episodes, and respects Limit Autoplay Quality there.</property>
                           <onclick>RunPlugin(plugin://plugin.video.redlight/?mode=settings_manager.set_boolean&amp;setting_id=autoplay.easynews)</onclick>
                       </item>
                       <item>
-                          <visible>Container(2000).HasFocus(60)</visible>
+                          <visible>Container(2000).HasFocus(62)</visible>
                           <visible>String.IsEqual(Window(10000).Property(redlight.provider.easynews),true)</visible>
                           <visible>![String.IsEmpty(Window(10000).Property(redlight.easynews_user)) + String.IsEmpty(Window(10000).Property(redlight.easynews_password))]</visible>
                           <property name="setting_label">Priority (Lower Number Equals Higher Priority)</property>
@@ -2342,13 +2471,13 @@
                       </item>
         <!-- Offcloud -->
                       <item>
-                          <visible>Container(2000).HasFocus(60)</visible>
+                          <visible>Container(2000).HasFocus(61)</visible>
                           <property name="setting_label">Offcloud</property>
                           <property name="setting_type">separator</property>
                           <onclick>noop</onclick>
                       </item>
                       <item>
-                          <visible>Container(2000).HasFocus(60)</visible>
+                          <visible>Container(2000).HasFocus(61)</visible>
                           <visible>String.IsEqual(Window(10000).Property(redlight.oc.token),empty_setting)</visible>
                           <property name="setting_label">Authorise</property>
                           <property name="setting_type">action</property>
@@ -2357,7 +2486,7 @@
                           <onclick>RunPlugin(plugin://plugin.video.redlight/?mode=offcloud.authenticate)</onclick>
                       </item>
                       <item>
-                          <visible>Container(2000).HasFocus(60)</visible>
+                          <visible>Container(2000).HasFocus(61)</visible>
                           <visible>!String.IsEqual(Window(10000).Property(redlight.oc.token),empty_setting)</visible>
                           <property name="setting_label">Enable</property>
                           <property name="setting_type">boolean</property>
@@ -2366,7 +2495,7 @@
                           <onclick>RunPlugin(plugin://plugin.video.redlight/?mode=settings_manager.set_boolean&amp;setting_id=oc.enabled)</onclick>
                       </item>
                       <item>
-                          <visible>Container(2000).HasFocus(60)</visible>
+                          <visible>Container(2000).HasFocus(61)</visible>
                           <visible>!String.IsEqual(Window(10000).Property(redlight.oc.token),empty_setting)</visible>
                           <visible>String.IsEqual(Window(10000).Property(redlight.oc.enabled),true)</visible>
                           <property name="setting_label">Revoke Authorisation</property>
@@ -2376,7 +2505,7 @@
                           <onclick>RunPlugin(plugin://plugin.video.redlight/?mode=offcloud.revoke_authentication)</onclick>
                       </item>
                       <item>
-                          <visible>Container(2000).HasFocus(60)</visible>
+                          <visible>Container(2000).HasFocus(61)</visible>
                           <visible>!String.IsEqual(Window(10000).Property(redlight.oc.token),empty_setting)</visible>
                           <visible>String.IsEqual(Window(10000).Property(redlight.oc.enabled),true)</visible>
                           <visible>String.IsEqual(Window(10000).Property(redlight.provider.external),true)</visible>
@@ -2387,7 +2516,7 @@
                           <onclick>RunPlugin(plugin://plugin.video.redlight/?mode=settings_manager.set_boolean&amp;setting_id=oc.cache_check)</onclick>
                       </item>
                       <item>
-                          <visible>Container(2000).HasFocus(60)</visible>
+                          <visible>Container(2000).HasFocus(61)</visible>
                           <visible>!String.IsEqual(Window(10000).Property(redlight.oc.token),empty_setting)</visible>
                           <visible>String.IsEqual(Window(10000).Property(redlight.oc.enabled),true)</visible>
                           <visible>String.IsEqual(Window(10000).Property(redlight.provider.external),true)</visible>
@@ -2399,7 +2528,7 @@
                           <onclick>RunPlugin(plugin://plugin.video.redlight/?mode=settings_manager.set_boolean&amp;setting_id=oc.include_uncached)</onclick>
                       </item>
                       <item>
-                          <visible>Container(2000).HasFocus(60)</visible>
+                          <visible>Container(2000).HasFocus(61)</visible>
                           <visible>!String.IsEqual(Window(10000).Property(redlight.oc.token),empty_setting)</visible>
                           <visible>String.IsEqual(Window(10000).Property(redlight.oc.enabled),true)</visible>
                           <property name="setting_label">Add Resolved Debrid Cache to Cloud</property>
@@ -2409,7 +2538,7 @@
                           <onclick>RunPlugin(plugin://plugin.video.redlight/?mode=settings_manager.set_from_list&amp;setting_id=store_resolved_to_cloud.offcloud)</onclick>
                       </item>
                       <item>
-                          <visible>Container(2000).HasFocus(60)</visible>
+                          <visible>Container(2000).HasFocus(61)</visible>
                           <visible>!String.IsEqual(Window(10000).Property(redlight.oc.token),empty_setting)</visible>
                           <visible>String.IsEqual(Window(10000).Property(redlight.oc.enabled),true)</visible>
                           <property name="setting_label">Notify when added torrents are ready in Cloud</property>
@@ -2419,7 +2548,7 @@
                           <onclick>RunPlugin(plugin://plugin.video.redlight/?mode=settings_manager.set_boolean&amp;setting_id=oc.notify_cloud_ready)</onclick>
                       </item>
                       <item>
-                          <visible>Container(2000).HasFocus(60)</visible>
+                          <visible>Container(2000).HasFocus(61)</visible>
                           <visible>!String.IsEqual(Window(10000).Property(redlight.oc.token),empty_setting)</visible>
                           <visible>String.IsEqual(Window(10000).Property(redlight.oc.enabled),true)</visible>
                           <property name="setting_label">Search Cloud Storage</property>
@@ -2429,7 +2558,7 @@
                           <onclick>RunPlugin(plugin://plugin.video.redlight/?mode=settings_manager.set_boolean&amp;setting_id=provider.oc_cloud)</onclick>
                       </item>
                       <item>
-                          <visible>Container(2000).HasFocus(60)</visible>
+                          <visible>Container(2000).HasFocus(61)</visible>
                           <visible>!String.IsEqual(Window(10000).Property(redlight.oc.token),empty_setting)</visible>
                           <visible>String.IsEqual(Window(10000).Property(redlight.oc.enabled),true)</visible>
                           <visible>String.IsEqual(Window(10000).Property(redlight.provider.oc_cloud),true)</visible>
@@ -2440,18 +2569,30 @@
                           <onclick>RunPlugin(plugin://plugin.video.redlight/?mode=settings_manager.set_boolean&amp;setting_id=oc_cloud.title_filter)</onclick>
                       </item>
                       <item>
-                          <visible>Container(2000).HasFocus(60)</visible>
+                          <visible>Container(2000).HasFocus(61)</visible>
                           <visible>!String.IsEqual(Window(10000).Property(redlight.oc.token),empty_setting)</visible>
                           <visible>String.IsEqual(Window(10000).Property(redlight.oc.enabled),true)</visible>
                           <visible>String.IsEqual(Window(10000).Property(redlight.provider.oc_cloud),true)</visible>
                           <property name="setting_label">    - Check Before Full Search</property>
                           <property name="setting_type">boolean</property>
                           <property name="setting_value">$INFO[Window(10000).Property(redlight.check.oc_cloud)]</property>
-                          <property name="setting_description">Enable this and Red Light will search your Offcloud cloud before checking other enabled scrapers</property>
+                          <property name="setting_description">Search your Offcloud cloud early in the source search, before external torrent scrapers and the rest of the internal scrape list finish. Does not replace other providers — the full source search continues afterward. Pair with Autoplay Cloud Result below (shown when Check Before Full Search is enabled) to autoplay a prescrape hit from this source.</property>
                           <onclick>RunPlugin(plugin://plugin.video.redlight/?mode=settings_manager.set_boolean&amp;setting_id=check.oc_cloud)</onclick>
                       </item>
                       <item>
-                          <visible>Container(2000).HasFocus(60)</visible>
+                          <visible>Container(2000).HasFocus(61)</visible>
+                          <visible>!String.IsEqual(Window(10000).Property(redlight.oc.token),empty_setting)</visible>
+                          <visible>String.IsEqual(Window(10000).Property(redlight.oc.enabled),true)</visible>
+                          <visible>String.IsEqual(Window(10000).Property(redlight.provider.oc_cloud),true)</visible>
+                          <visible>String.IsEqual(Window(10000).Property(redlight.check.oc_cloud),true)</visible>
+                          <property name="setting_label">    - Autoplay Cloud Result</property>
+                          <property name="setting_type">boolean</property>
+                          <property name="setting_value">$INFO[Window(10000).Property(redlight.autoplay.oc_cloud)]</property>
+                          <property name="setting_description">When Check Before Full Search is enabled, autoplay the top Offcloud cloud result found during prescrape instead of opening the results list. Requires Autoplay under Playback > Movies or Episodes, and respects Limit Autoplay Quality there.</property>
+                          <onclick>RunPlugin(plugin://plugin.video.redlight/?mode=settings_manager.set_boolean&amp;setting_id=autoplay.oc_cloud)</onclick>
+                      </item>
+                      <item>
+                          <visible>Container(2000).HasFocus(61)</visible>
                           <visible>!String.IsEqual(Window(10000).Property(redlight.oc.token),empty_setting)</visible>
                           <visible>String.IsEqual(Window(10000).Property(redlight.oc.enabled),true)</visible>
                           <visible>String.IsEqual(Window(10000).Property(redlight.provider.oc_cloud),true)</visible>
@@ -2462,7 +2603,7 @@
                           <onclick>RunPlugin(plugin://plugin.video.redlight/?mode=settings_manager.set_boolean&amp;setting_id=results.sort_occloud_first)</onclick>
                       </item>
                       <item>
-                          <visible>Container(2000).HasFocus(60)</visible>
+                          <visible>Container(2000).HasFocus(61)</visible>
                           <visible>!String.IsEqual(Window(10000).Property(redlight.oc.token),empty_setting)</visible>
                           <visible>String.IsEqual(Window(10000).Property(redlight.oc.enabled),true)</visible>
                           <property name="setting_label">Priority (Lower Number Equals Higher Priority)</property>
@@ -2473,13 +2614,13 @@
                       </item>
         <!-- Premiumize -->
                       <item>
-                          <visible>Container(2000).HasFocus(60)</visible>
+                          <visible>Container(2000).HasFocus(61)</visible>
                           <property name="setting_label">Premiumize</property>
                           <property name="setting_type">separator</property>
                           <onclick>noop</onclick>
                       </item>
                       <item>
-                          <visible>Container(2000).HasFocus(60)</visible>
+                          <visible>Container(2000).HasFocus(61)</visible>
                           <visible>String.IsEqual(Window(10000).Property(redlight.pm.token),empty_setting)</visible>
                           <property name="setting_label">Authorise</property>
                           <property name="setting_type">action</property>
@@ -2488,7 +2629,7 @@
                           <onclick>RunPlugin(plugin://plugin.video.redlight/?mode=premiumize.authenticate)</onclick>
                       </item>
                       <item>
-                          <visible>Container(2000).HasFocus(60)</visible>
+                          <visible>Container(2000).HasFocus(61)</visible>
                           <visible>!String.IsEqual(Window(10000).Property(redlight.pm.token),empty_setting)</visible>
                           <property name="setting_label">Enable</property>
                           <property name="setting_type">boolean</property>
@@ -2497,7 +2638,7 @@
                           <onclick>RunPlugin(plugin://plugin.video.redlight/?mode=settings_manager.set_boolean&amp;setting_id=pm.enabled)</onclick>
                       </item>
                       <item>
-                          <visible>Container(2000).HasFocus(60)</visible>
+                          <visible>Container(2000).HasFocus(61)</visible>
                           <visible>!String.IsEqual(Window(10000).Property(redlight.pm.token),empty_setting)</visible>
                           <visible>String.IsEqual(Window(10000).Property(redlight.pm.enabled),true)</visible>
                           <property name="setting_label">Revoke Authorisation</property>
@@ -2507,7 +2648,7 @@
                           <onclick>RunPlugin(plugin://plugin.video.redlight/?mode=premiumize.revoke_authentication)</onclick>
                       </item>
                       <item>
-                          <visible>Container(2000).HasFocus(60)</visible>
+                          <visible>Container(2000).HasFocus(61)</visible>
                           <visible>!String.IsEqual(Window(10000).Property(redlight.pm.token),empty_setting)</visible>
                           <visible>String.IsEqual(Window(10000).Property(redlight.pm.enabled),true)</visible>
                           <visible>String.IsEqual(Window(10000).Property(redlight.provider.external),true)</visible>
@@ -2518,7 +2659,7 @@
                           <onclick>RunPlugin(plugin://plugin.video.redlight/?mode=settings_manager.set_boolean&amp;setting_id=pm.cache_check)</onclick>
                       </item>
                       <item>
-                          <visible>Container(2000).HasFocus(60)</visible>
+                          <visible>Container(2000).HasFocus(61)</visible>
                           <visible>!String.IsEqual(Window(10000).Property(redlight.pm.token),empty_setting)</visible>
                           <visible>String.IsEqual(Window(10000).Property(redlight.pm.enabled),true)</visible>
                           <visible>String.IsEqual(Window(10000).Property(redlight.provider.external),true)</visible>
@@ -2530,7 +2671,7 @@
                           <onclick>RunPlugin(plugin://plugin.video.redlight/?mode=settings_manager.set_boolean&amp;setting_id=pm.include_uncached)</onclick>
                       </item>
                       <item>
-                          <visible>Container(2000).HasFocus(60)</visible>
+                          <visible>Container(2000).HasFocus(61)</visible>
                           <visible>!String.IsEqual(Window(10000).Property(redlight.pm.token),empty_setting)</visible>
                           <visible>String.IsEqual(Window(10000).Property(redlight.pm.enabled),true)</visible>
                           <property name="setting_label">Add Resolved Debrid Cache to Cloud</property>
@@ -2540,7 +2681,7 @@
                           <onclick>RunPlugin(plugin://plugin.video.redlight/?mode=settings_manager.set_from_list&amp;setting_id=store_resolved_to_cloud.premiumize.me)</onclick>
                       </item>
                       <item>
-                          <visible>Container(2000).HasFocus(60)</visible>
+                          <visible>Container(2000).HasFocus(61)</visible>
                           <visible>!String.IsEqual(Window(10000).Property(redlight.pm.token),empty_setting)</visible>
                           <visible>String.IsEqual(Window(10000).Property(redlight.pm.enabled),true)</visible>
                           <property name="setting_label">Search Cloud Storage</property>
@@ -2550,7 +2691,7 @@
                           <onclick>RunPlugin(plugin://plugin.video.redlight/?mode=settings_manager.set_boolean&amp;setting_id=provider.pm_cloud)</onclick>
                       </item>
                       <item>
-                          <visible>Container(2000).HasFocus(60)</visible>
+                          <visible>Container(2000).HasFocus(61)</visible>
                           <visible>!String.IsEqual(Window(10000).Property(redlight.pm.token),empty_setting)</visible>
                           <visible>String.IsEqual(Window(10000).Property(redlight.pm.enabled),true)</visible>
                           <visible>String.IsEqual(Window(10000).Property(redlight.provider.pm_cloud),true)</visible>
@@ -2561,18 +2702,18 @@
                           <onclick>RunPlugin(plugin://plugin.video.redlight/?mode=settings_manager.set_boolean&amp;setting_id=pm_cloud.title_filter)</onclick>
                       </item>
                       <item>
-                          <visible>Container(2000).HasFocus(60)</visible>
+                          <visible>Container(2000).HasFocus(61)</visible>
                           <visible>!String.IsEqual(Window(10000).Property(redlight.pm.token),empty_setting)</visible>
                           <visible>String.IsEqual(Window(10000).Property(redlight.pm.enabled),true)</visible>
                           <visible>String.IsEqual(Window(10000).Property(redlight.provider.pm_cloud),true)</visible>
                           <property name="setting_label">    - Check Before Full Search</property>
                           <property name="setting_type">boolean</property>
                           <property name="setting_value">$INFO[Window(10000).Property(redlight.check.pm_cloud)]</property>
-                          <property name="setting_description">Enable this and Red Light will search for results in your Premiumize Cloud before checking other enabled scrapers</property>
+                          <property name="setting_description">Search your Premiumize cloud early in the source search, before external torrent scrapers and the rest of the internal scrape list finish. Does not replace other providers — the full source search continues afterward. Pair with Autoplay Cloud Result below (shown when Check Before Full Search is enabled) to autoplay a prescrape hit from this source.</property>
                           <onclick>RunPlugin(plugin://plugin.video.redlight/?mode=settings_manager.set_boolean&amp;setting_id=check.pm_cloud)</onclick>
                       </item>
                       <item>
-                          <visible>Container(2000).HasFocus(60)</visible>
+                          <visible>Container(2000).HasFocus(61)</visible>
                           <visible>!String.IsEqual(Window(10000).Property(redlight.pm.token),empty_setting)</visible>
                           <visible>String.IsEqual(Window(10000).Property(redlight.pm.enabled),true)</visible>
                           <visible>String.IsEqual(Window(10000).Property(redlight.provider.pm_cloud),true)</visible>
@@ -2580,11 +2721,11 @@
                           <property name="setting_label">    - Autoplay Cloud Result</property>
                           <property name="setting_type">boolean</property>
                           <property name="setting_value">$INFO[Window(10000).Property(redlight.autoplay.pm_cloud)]</property>
-                          <property name="setting_description">Enable this and Red Light will Autoplay the top result found from the Premiumize Cloud</property>
+                          <property name="setting_description">When Check Before Full Search is enabled, autoplay the top Premiumize cloud result found during prescrape instead of opening the results list. Requires Autoplay under Playback > Movies or Episodes, and respects Limit Autoplay Quality there.</property>
                           <onclick>RunPlugin(plugin://plugin.video.redlight/?mode=settings_manager.set_boolean&amp;setting_id=autoplay.pm_cloud)</onclick>
                       </item>
                       <item>
-                          <visible>Container(2000).HasFocus(60)</visible>
+                          <visible>Container(2000).HasFocus(61)</visible>
                           <visible>!String.IsEqual(Window(10000).Property(redlight.pm.token),empty_setting)</visible>
                           <visible>String.IsEqual(Window(10000).Property(redlight.pm.enabled),true)</visible>
                           <visible>String.IsEqual(Window(10000).Property(redlight.provider.pm_cloud),true)</visible>
@@ -2595,7 +2736,7 @@
                           <onclick>RunPlugin(plugin://plugin.video.redlight/?mode=settings_manager.set_boolean&amp;setting_id=results.sort_pmcloud_first)</onclick>
                       </item>
                       <item>
-                          <visible>Container(2000).HasFocus(60)</visible>
+                          <visible>Container(2000).HasFocus(61)</visible>
                           <visible>!String.IsEqual(Window(10000).Property(redlight.pm.token),empty_setting)</visible>
                           <visible>String.IsEqual(Window(10000).Property(redlight.pm.enabled),true)</visible>
                          <property name="setting_label">Priority (Lower Number Equals Higher Priority)</property>
@@ -2606,13 +2747,13 @@
                      </item>
         <!-- Real Debrid -->
                       <item>
-                          <visible>Container(2000).HasFocus(60)</visible>
+                          <visible>Container(2000).HasFocus(61)</visible>
                           <property name="setting_label">Real Debrid</property>
                           <property name="setting_type">separator</property>
                           <onclick>noop</onclick>
                       </item>
                       <item>
-                          <visible>Container(2000).HasFocus(60)</visible>
+                          <visible>Container(2000).HasFocus(61)</visible>
                           <visible>String.IsEqual(Window(10000).Property(redlight.rd.token),empty_setting)</visible>
                           <property name="setting_label">Authorise</property>
                           <property name="setting_type">action</property>
@@ -2621,7 +2762,7 @@
                           <onclick>RunPlugin(plugin://plugin.video.redlight/?mode=real_debrid.authenticate)</onclick>
                       </item>
                       <item>
-                          <visible>Container(2000).HasFocus(60)</visible>
+                          <visible>Container(2000).HasFocus(61)</visible>
                           <visible>!String.IsEqual(Window(10000).Property(redlight.rd.token),empty_setting)</visible>
                           <property name="setting_label">Enable</property>
                           <property name="setting_type">boolean</property>
@@ -2630,7 +2771,7 @@
                           <onclick>RunPlugin(plugin://plugin.video.redlight/?mode=settings_manager.set_boolean&amp;setting_id=rd.enabled)</onclick>
                       </item>
                       <item>
-                          <visible>Container(2000).HasFocus(60)</visible>
+                          <visible>Container(2000).HasFocus(61)</visible>
                           <visible>!String.IsEqual(Window(10000).Property(redlight.rd.token),empty_setting)</visible>
                           <visible>String.IsEqual(Window(10000).Property(redlight.rd.enabled),true)</visible>
                           <property name="setting_label">Revoke Authorisation</property>
@@ -2640,7 +2781,7 @@
                           <onclick>RunPlugin(plugin://plugin.video.redlight/?mode=real_debrid.revoke_authentication)</onclick>
                       </item>
                       <item>
-                          <visible>Container(2000).HasFocus(60)</visible>
+                          <visible>Container(2000).HasFocus(61)</visible>
                           <visible>!String.IsEqual(Window(10000).Property(redlight.rd.token),empty_setting)</visible>
                           <visible>String.IsEqual(Window(10000).Property(redlight.rd.enabled),true)</visible>
                           <visible>String.IsEqual(Window(10000).Property(redlight.provider.external),true)</visible>
@@ -2651,7 +2792,7 @@
                           <onclick>RunPlugin(plugin://plugin.video.redlight/?mode=settings_manager.set_boolean&amp;setting_id=rd.cache_check)</onclick>
                       </item>
                       <item>
-                          <visible>Container(2000).HasFocus(60)</visible>
+                          <visible>Container(2000).HasFocus(61)</visible>
                           <visible>!String.IsEqual(Window(10000).Property(redlight.rd.token),empty_setting)</visible>
                           <visible>String.IsEqual(Window(10000).Property(redlight.rd.enabled),true)</visible>
                           <property name="setting_label">Add Resolved Debrid Cache to Cloud</property>
@@ -2661,7 +2802,7 @@
                           <onclick>RunPlugin(plugin://plugin.video.redlight/?mode=settings_manager.set_from_list&amp;setting_id=store_resolved_to_cloud.real-debrid)</onclick>
                       </item>
                       <item>
-                          <visible>Container(2000).HasFocus(60)</visible>
+                          <visible>Container(2000).HasFocus(61)</visible>
                           <visible>!String.IsEqual(Window(10000).Property(redlight.rd.token),empty_setting)</visible>
                           <visible>String.IsEqual(Window(10000).Property(redlight.rd.enabled),true)</visible>
                           <property name="setting_label">Search Cloud Storage</property>
@@ -2671,7 +2812,7 @@
                           <onclick>RunPlugin(plugin://plugin.video.redlight/?mode=settings_manager.set_boolean&amp;setting_id=provider.rd_cloud)</onclick>
                       </item>
                       <item>
-                          <visible>Container(2000).HasFocus(60)</visible>
+                          <visible>Container(2000).HasFocus(61)</visible>
                           <visible>!String.IsEqual(Window(10000).Property(redlight.rd.token),empty_setting)</visible>
                           <visible>String.IsEqual(Window(10000).Property(redlight.rd.enabled),true)</visible>
                           <visible>String.IsEqual(Window(10000).Property(redlight.provider.rd_cloud),true)</visible>
@@ -2682,18 +2823,18 @@
                           <onclick>RunPlugin(plugin://plugin.video.redlight/?mode=settings_manager.set_boolean&amp;setting_id=rd_cloud.title_filter)</onclick>
                       </item>
                       <item>
-                          <visible>Container(2000).HasFocus(60)</visible>
+                          <visible>Container(2000).HasFocus(61)</visible>
                           <visible>!String.IsEqual(Window(10000).Property(redlight.rd.token),empty_setting)</visible>
                           <visible>String.IsEqual(Window(10000).Property(redlight.rd.enabled),true)</visible>
                           <visible>String.IsEqual(Window(10000).Property(redlight.provider.rd_cloud),true)</visible>
                           <property name="setting_label">    - Check Before Full Search</property>
                           <property name="setting_type">boolean</property>
                           <property name="setting_value">$INFO[Window(10000).Property(redlight.check.rd_cloud)]</property>
-                          <property name="setting_description">Enable this and Red Light will search for results in your Real Debrid Cloud before checking other enabled scrapers</property>
+                          <property name="setting_description">Search your Real Debrid cloud early in the source search, before external torrent scrapers and the rest of the internal scrape list finish. Does not replace other providers — the full source search continues afterward. Pair with Autoplay Cloud Result below (shown when Check Before Full Search is enabled) to autoplay a prescrape hit from this source.</property>
                           <onclick>RunPlugin(plugin://plugin.video.redlight/?mode=settings_manager.set_boolean&amp;setting_id=check.rd_cloud)</onclick>
                       </item>
                       <item>
-                          <visible>Container(2000).HasFocus(60)</visible>
+                          <visible>Container(2000).HasFocus(61)</visible>
                           <visible>!String.IsEqual(Window(10000).Property(redlight.rd.token),empty_setting)</visible>
                           <visible>String.IsEqual(Window(10000).Property(redlight.rd.enabled),true)</visible>
                           <visible>String.IsEqual(Window(10000).Property(redlight.provider.rd_cloud),true)</visible>
@@ -2701,11 +2842,11 @@
                           <property name="setting_label">    - Autoplay Cloud Result</property>
                           <property name="setting_type">boolean</property>
                           <property name="setting_value">$INFO[Window(10000).Property(redlight.autoplay.rd_cloud)]</property>
-                          <property name="setting_description">Enable this and Red Light will Autoplay the top result found from the Real Debrid Cloud</property>
+                          <property name="setting_description">When Check Before Full Search is enabled, autoplay the top Real Debrid cloud result found during prescrape instead of opening the results list. Requires Autoplay under Playback > Movies or Episodes, and respects Limit Autoplay Quality there.</property>
                           <onclick>RunPlugin(plugin://plugin.video.redlight/?mode=settings_manager.set_boolean&amp;setting_id=autoplay.rd_cloud)</onclick>
                       </item>
                       <item>
-                          <visible>Container(2000).HasFocus(60)</visible>
+                          <visible>Container(2000).HasFocus(61)</visible>
                           <visible>!String.IsEqual(Window(10000).Property(redlight.rd.token),empty_setting)</visible>
                           <visible>String.IsEqual(Window(10000).Property(redlight.rd.enabled),true)</visible>
                           <visible>String.IsEqual(Window(10000).Property(redlight.provider.rd_cloud),true)</visible>
@@ -2716,7 +2857,7 @@
                           <onclick>RunPlugin(plugin://plugin.video.redlight/?mode=settings_manager.set_boolean&amp;setting_id=results.sort_rdcloud_first)</onclick>
                       </item>
                       <item>
-                          <visible>Container(2000).HasFocus(60)</visible>
+                          <visible>Container(2000).HasFocus(61)</visible>
                           <visible>!String.IsEqual(Window(10000).Property(redlight.rd.token),empty_setting)</visible>
                           <visible>String.IsEqual(Window(10000).Property(redlight.rd.enabled),true)</visible>
                           <property name="setting_label">Priority (Lower Number Equals Higher Priority)</property>
@@ -2726,7 +2867,7 @@
                           <onclick>RunPlugin(plugin://plugin.video.redlight/?mode=settings_manager.set_numeric&amp;setting_id=rd.priority)</onclick>
                       </item>
                       <item>
-                          <visible>Container(2000).HasFocus(60)</visible>
+                          <visible>Container(2000).HasFocus(61)</visible>
                           <visible>!String.IsEqual(Window(10000).Property(redlight.rd.token),empty_setting)</visible>
                           <visible>String.IsEqual(Window(10000).Property(redlight.rd.enabled),true)</visible>
                           <property name="setting_label">Use alternate url</property>
@@ -2736,7 +2877,7 @@
                           <onclick>RunPlugin(plugin://plugin.video.redlight/?mode=settings_manager.set_boolean&amp;setting_id=rd.alternate_base_url)</onclick>
                       </item>
                       <item>
-                          <visible>Container(2000).HasFocus(60)</visible>
+                          <visible>Container(2000).HasFocus(61)</visible>
                           <visible>!String.IsEqual(Window(10000).Property(redlight.rd.token),empty_setting)</visible>
                           <visible>String.IsEqual(Window(10000).Property(redlight.rd.enabled),true)</visible>
                           <property name="setting_label">Free active download slot</property>
@@ -2747,13 +2888,13 @@
                       </item>
         <!-- TorBox -->
                       <item>
-                          <visible>Container(2000).HasFocus(60)</visible>
+                          <visible>Container(2000).HasFocus(61)</visible>
                           <property name="setting_label">TorBox</property>
                           <property name="setting_type">separator</property>
                           <onclick>noop</onclick>
                       </item>
                       <item>
-                          <visible>Container(2000).HasFocus(60)</visible>
+                          <visible>Container(2000).HasFocus(61)</visible>
                           <visible>String.IsEqual(Window(10000).Property(redlight.tb.token),empty_setting)</visible>
                           <property name="setting_label">Authorise</property>
                           <property name="setting_type">action</property>
@@ -2762,7 +2903,7 @@
                           <onclick>RunPlugin(plugin://plugin.video.redlight/?mode=torbox.authenticate)</onclick>
                       </item>
                       <item>
-                          <visible>Container(2000).HasFocus(60)</visible>
+                          <visible>Container(2000).HasFocus(61)</visible>
                           <visible>!String.IsEqual(Window(10000).Property(redlight.tb.token),empty_setting)</visible>
                           <property name="setting_label">Enable</property>
                           <property name="setting_type">boolean</property>
@@ -2771,7 +2912,7 @@
                           <onclick>RunPlugin(plugin://plugin.video.redlight/?mode=settings_manager.set_boolean&amp;setting_id=tb.enabled)</onclick>
                       </item>
                       <item>
-                          <visible>Container(2000).HasFocus(60)</visible>
+                          <visible>Container(2000).HasFocus(61)</visible>
                           <visible>!String.IsEqual(Window(10000).Property(redlight.tb.token),empty_setting)</visible>
                           <visible>String.IsEqual(Window(10000).Property(redlight.tb.enabled),true)</visible>
                           <property name="setting_label">Revoke Authorisation</property>
@@ -2781,7 +2922,7 @@
                           <onclick>RunPlugin(plugin://plugin.video.redlight/?mode=torbox.revoke_authentication)</onclick>
                       </item>
                       <item>
-                          <visible>Container(2000).HasFocus(60)</visible>
+                          <visible>Container(2000).HasFocus(61)</visible>
                           <visible>!String.IsEqual(Window(10000).Property(redlight.tb.token),empty_setting)</visible>
                           <visible>String.IsEqual(Window(10000).Property(redlight.tb.enabled),true)</visible>
                           <visible>String.IsEqual(Window(10000).Property(redlight.provider.external),true)</visible>
@@ -2792,7 +2933,7 @@
                           <onclick>RunPlugin(plugin://plugin.video.redlight/?mode=settings_manager.set_boolean&amp;setting_id=tb.cache_check)</onclick>
                       </item>
                       <item>
-                          <visible>Container(2000).HasFocus(60)</visible>
+                          <visible>Container(2000).HasFocus(61)</visible>
                           <visible>!String.IsEqual(Window(10000).Property(redlight.tb.token),empty_setting)</visible>
                           <visible>String.IsEqual(Window(10000).Property(redlight.tb.enabled),true)</visible>
                           <visible>String.IsEqual(Window(10000).Property(redlight.provider.external),true)</visible>
@@ -2804,7 +2945,7 @@
                           <onclick>RunPlugin(plugin://plugin.video.redlight/?mode=settings_manager.set_boolean&amp;setting_id=tb.include_uncached)</onclick>
                       </item>
                       <item>
-                          <visible>Container(2000).HasFocus(60)</visible>
+                          <visible>Container(2000).HasFocus(61)</visible>
                           <visible>!String.IsEqual(Window(10000).Property(redlight.tb.token),empty_setting)</visible>
                           <visible>String.IsEqual(Window(10000).Property(redlight.tb.enabled),true)</visible>
                           <property name="setting_label">Add Resolved Debrid Cache to Cloud</property>
@@ -2814,7 +2955,7 @@
                           <onclick>RunPlugin(plugin://plugin.video.redlight/?mode=settings_manager.set_from_list&amp;setting_id=store_resolved_to_cloud.torbox)</onclick>
                       </item>
                       <item>
-                          <visible>Container(2000).HasFocus(60)</visible>
+                          <visible>Container(2000).HasFocus(61)</visible>
                           <visible>!String.IsEqual(Window(10000).Property(redlight.tb.token),empty_setting)</visible>
                           <visible>String.IsEqual(Window(10000).Property(redlight.tb.enabled),true)</visible>
                           <property name="setting_label">Notify when added torrents are ready in Cloud</property>
@@ -2824,7 +2965,7 @@
                           <onclick>RunPlugin(plugin://plugin.video.redlight/?mode=settings_manager.set_boolean&amp;setting_id=tb.notify_cloud_ready)</onclick>
                       </item>
                       <item>
-                          <visible>Container(2000).HasFocus(60)</visible>
+                          <visible>Container(2000).HasFocus(61)</visible>
                           <visible>!String.IsEqual(Window(10000).Property(redlight.tb.token),empty_setting)</visible>
                           <visible>String.IsEqual(Window(10000).Property(redlight.tb.enabled),true)</visible>
                           <property name="setting_label">Search Cloud Storage</property>
@@ -2834,7 +2975,7 @@
                           <onclick>RunPlugin(plugin://plugin.video.redlight/?mode=settings_manager.set_boolean&amp;setting_id=provider.tb_cloud)</onclick>
                       </item>
                       <item>
-                          <visible>Container(2000).HasFocus(60)</visible>
+                          <visible>Container(2000).HasFocus(61)</visible>
                           <visible>!String.IsEqual(Window(10000).Property(redlight.tb.token),empty_setting)</visible>
                           <visible>String.IsEqual(Window(10000).Property(redlight.tb.enabled),true)</visible>
                           <visible>String.IsEqual(Window(10000).Property(redlight.provider.tb_cloud),true)</visible>
@@ -2845,18 +2986,18 @@
                           <onclick>RunPlugin(plugin://plugin.video.redlight/?mode=settings_manager.set_boolean&amp;setting_id=tb_cloud.title_filter)</onclick>
                       </item>
                       <item>
-                          <visible>Container(2000).HasFocus(60)</visible>
+                          <visible>Container(2000).HasFocus(61)</visible>
                           <visible>!String.IsEqual(Window(10000).Property(redlight.tb.token),empty_setting)</visible>
                           <visible>String.IsEqual(Window(10000).Property(redlight.tb.enabled),true)</visible>
                           <visible>String.IsEqual(Window(10000).Property(redlight.provider.tb_cloud),true)</visible>
                           <property name="setting_label">    - Check Before Full Search</property>
                           <property name="setting_type">boolean</property>
                           <property name="setting_value">$INFO[Window(10000).Property(redlight.check.tb_cloud)]</property>
-                          <property name="setting_description">Enable this and Red Light will search for results in your TorBox Cloud before checking other enabled scrapers</property>
+                          <property name="setting_description">Search your TorBox cloud early in the source search, before external torrent scrapers and the rest of the internal scrape list finish. Does not replace other providers — the full source search continues afterward. Pair with Autoplay Cloud Result below (shown when Check Before Full Search is enabled) to autoplay a prescrape hit from this source.</property>
                           <onclick>RunPlugin(plugin://plugin.video.redlight/?mode=settings_manager.set_boolean&amp;setting_id=check.tb_cloud)</onclick>
                       </item>
                       <item>
-                          <visible>Container(2000).HasFocus(60)</visible>
+                          <visible>Container(2000).HasFocus(61)</visible>
                           <visible>!String.IsEqual(Window(10000).Property(redlight.tb.token),empty_setting)</visible>
                           <visible>String.IsEqual(Window(10000).Property(redlight.tb.enabled),true)</visible>
                           <visible>String.IsEqual(Window(10000).Property(redlight.provider.tb_cloud),true)</visible>
@@ -2864,11 +3005,11 @@
                           <property name="setting_label">    - Autoplay Cloud Result</property>
                           <property name="setting_type">boolean</property>
                           <property name="setting_value">$INFO[Window(10000).Property(redlight.autoplay.tb_cloud)]</property>
-                          <property name="setting_description">Enable this and Red Light will Autoplay the top result found from the TorBox Cloud</property>
+                          <property name="setting_description">When Check Before Full Search is enabled, autoplay the top TorBox cloud result found during prescrape instead of opening the results list. Requires Autoplay under Playback > Movies or Episodes, and respects Limit Autoplay Quality there.</property>
                           <onclick>RunPlugin(plugin://plugin.video.redlight/?mode=settings_manager.set_boolean&amp;setting_id=autoplay.tb_cloud)</onclick>
                       </item>
                       <item>
-                          <visible>Container(2000).HasFocus(60)</visible>
+                          <visible>Container(2000).HasFocus(61)</visible>
                           <visible>!String.IsEqual(Window(10000).Property(redlight.tb.token),empty_setting)</visible>
                           <visible>String.IsEqual(Window(10000).Property(redlight.tb.enabled),true)</visible>
                           <visible>String.IsEqual(Window(10000).Property(redlight.provider.tb_cloud),true)</visible>
@@ -2879,7 +3020,7 @@
                           <onclick>RunPlugin(plugin://plugin.video.redlight/?mode=settings_manager.set_boolean&amp;setting_id=results.sort_tbcloud_first)</onclick>
                       </item>
                       <item>
-                          <visible>Container(2000).HasFocus(60)</visible>
+                          <visible>Container(2000).HasFocus(61)</visible>
                           <visible>!String.IsEqual(Window(10000).Property(redlight.tb.token),empty_setting)</visible>
                           <visible>String.IsEqual(Window(10000).Property(redlight.tb.enabled),true)</visible>
                           <property name="setting_label">Priority (Lower Number Equals Higher Priority)</property>
@@ -2888,128 +3029,15 @@
                           <property name="setting_description">Choose the order in which TorBox results appear in relation to any other active accounts. The lower the number, the higher the sort order</property>
                           <onclick>RunPlugin(plugin://plugin.video.redlight/?mode=settings_manager.set_numeric&amp;setting_id=tb.priority)</onclick>
                       </item>
-        <!-- AIOStreams (hidden while aiostreams_api.ENABLED is false) -->
-                      <item>
-                          <visible>Container(2000).HasFocus(60)</visible>
-                          <visible>String.IsEqual(Window(10000).Property(redlight.aiostreams.available),true)</visible>
-                          <property name="setting_label">AIOStreams</property>
-                          <property name="setting_type">separator</property>
-                          <onclick>noop</onclick>
-                      </item>
-                      <item>
-                          <visible>Container(2000).HasFocus(60)</visible>
-                          <visible>String.IsEqual(Window(10000).Property(redlight.aiostreams.available),true)</visible>
-                          <property name="setting_label">Enable</property>
-                          <property name="setting_type">boolean</property>
-                          <property name="setting_value">$INFO[Window(10000).Property(redlight.provider.aiostreams)]</property>
-                          <property name="setting_description">Enable AIOStreams as an optional source provider alongside Debrid, EasyNews, and external scrapers. Requires your AIOStreams instance username and password (HTTP Basic Auth).</property>
-                          <onclick>RunPlugin(plugin://plugin.video.redlight/?mode=settings_manager.set_boolean&amp;setting_id=provider.aiostreams)</onclick>
-                      </item>
-                      <item>
-                          <visible>Container(2000).HasFocus(60)</visible>
-                          <visible>String.IsEqual(Window(10000).Property(redlight.aiostreams.available),true)</visible>
-                          <visible>String.IsEqual(Window(10000).Property(redlight.provider.aiostreams),true)</visible>
-                          <property name="setting_label">Instance</property>
-                          <property name="setting_type">action</property>
-                          <property name="setting_value">$INFO[Window(10000).Property(redlight.aiostreams.instance_name)]</property>
-                          <property name="setting_description">Each preset shows its base URL in the picker and in this row. Kuu = aiostreams.stremio.ru | ElfHosted = aiostreams.elfhosted.com | Yeb = aiostreams.fortheweak.cloud | Midnight = aiostreamsfortheweebsstable.midnightignite.me | Custom = your own host (set URL below).</property>
-                          <onclick>RunPlugin(plugin://plugin.video.redlight/?mode=settings_manager.set_from_list&amp;setting_id=aiostreams.instance)</onclick>
-                      </item>
-                      <item>
-                          <visible>Container(2000).HasFocus(60)</visible>
-                          <visible>String.IsEqual(Window(10000).Property(redlight.aiostreams.available),true)</visible>
-                          <visible>String.IsEqual(Window(10000).Property(redlight.provider.aiostreams),true)</visible>
-                          <property name="setting_label">    - Active base URL</property>
-                          <property name="setting_type">action</property>
-                          <property name="setting_value">$INFO[Window(10000).Property(redlight.aiostreams.base_url)]</property>
-                          <property name="setting_description">The base URL Red Light uses for /api/v1/search on this scrape. Updates when you change Instance or Custom URL. API calls go to this host plus /api/v1/search.</property>
-                          <onclick>noop</onclick>
-                      </item>
-                      <item>
-                          <visible>Container(2000).HasFocus(60)</visible>
-                          <visible>String.IsEqual(Window(10000).Property(redlight.aiostreams.available),true)</visible>
-                          <visible>String.IsEqual(Window(10000).Property(redlight.provider.aiostreams),true)</visible>
-                          <visible>String.IsEqual(Window(10000).Property(redlight.aiostreams.instance),4)</visible>
-                          <property name="setting_label">    - Custom URL</property>
-                          <property name="setting_type">numeric</property>
-                          <property name="setting_value">$INFO[Window(10000).Property(redlight.aiostreams.custom_url)]</property>
-                          <property name="setting_description">Base URL for your custom AIOStreams instance (no trailing slash), e.g. https://aiostreams.example.com</property>
-                          <onclick>RunPlugin(plugin://plugin.video.redlight/?mode=settings_manager.set_string&amp;setting_id=aiostreams.custom_url)</onclick>
-                      </item>
-                      <item>
-                          <visible>Container(2000).HasFocus(60)</visible>
-                          <visible>String.IsEqual(Window(10000).Property(redlight.aiostreams.available),true)</visible>
-                          <visible>String.IsEqual(Window(10000).Property(redlight.provider.aiostreams),true)</visible>
-                          <property name="setting_label">Username</property>
-                          <property name="setting_type">numeric</property>
-                          <property name="setting_value">$INFO[Window(10000).Property(redlight.aiostreams.username)]</property>
-                          <property name="setting_description">HTTP Basic Auth username for your AIOStreams instance.</property>
-                          <onclick>RunPlugin(plugin://plugin.video.redlight/?mode=settings_manager.set_string&amp;setting_id=aiostreams.username)</onclick>
-                      </item>
-                      <item>
-                          <visible>Container(2000).HasFocus(60)</visible>
-                          <visible>String.IsEqual(Window(10000).Property(redlight.aiostreams.available),true)</visible>
-                          <visible>String.IsEqual(Window(10000).Property(redlight.provider.aiostreams),true)</visible>
-                          <property name="setting_label">Password</property>
-                          <property name="setting_type">password</property>
-                          <property name="setting_value">$INFO[Window(10000).Property(redlight.aiostreams.password)]</property>
-                          <property name="setting_description">HTTP Basic Auth password for your AIOStreams instance.</property>
-                          <onclick>RunPlugin(plugin://plugin.video.redlight/?mode=settings_manager.set_string&amp;setting_id=aiostreams.password)</onclick>
-                      </item>
-                      <item>
-                          <visible>Container(2000).HasFocus(60)</visible>
-                          <visible>String.IsEqual(Window(10000).Property(redlight.aiostreams.available),true)</visible>
-                          <visible>String.IsEqual(Window(10000).Property(redlight.provider.aiostreams),true)</visible>
-                          <visible>![String.IsEmpty(Window(10000).Property(redlight.aiostreams.username)) + String.IsEmpty(Window(10000).Property(redlight.aiostreams.password))]</visible>
-                          <property name="setting_label">Filter Results by Name</property>
-                          <property name="setting_type">boolean</property>
-                          <property name="setting_value">$INFO[Window(10000).Property(redlight.aiostreams.title_filter)]</property>
-                          <property name="setting_description">After AIOStreams returns results, match filenames against the movie or episode title (and aliases). Disable if valid links go missing.</property>
-                          <onclick>RunPlugin(plugin://plugin.video.redlight/?mode=settings_manager.set_boolean&amp;setting_id=aiostreams.title_filter)</onclick>
-                      </item>
-                      <item>
-                          <visible>Container(2000).HasFocus(60)</visible>
-                          <visible>String.IsEqual(Window(10000).Property(redlight.aiostreams.available),true)</visible>
-                          <visible>String.IsEqual(Window(10000).Property(redlight.provider.aiostreams),true)</visible>
-                          <visible>![String.IsEmpty(Window(10000).Property(redlight.aiostreams.username)) + String.IsEmpty(Window(10000).Property(redlight.aiostreams.password))]</visible>
-                          <property name="setting_label">Check Before Full Search</property>
-                          <property name="setting_type">boolean</property>
-                          <property name="setting_value">$INFO[Window(10000).Property(redlight.check.aiostreams)]</property>
-                          <property name="setting_description">Query AIOStreams early in the source search, before external torrent scrapers finish. Does not replace Debrid, EasyNews, or external scrapers. Often used with Autoplay Result below.</property>
-                          <onclick>RunPlugin(plugin://plugin.video.redlight/?mode=settings_manager.set_boolean&amp;setting_id=check.aiostreams)</onclick>
-                      </item>
-                      <item>
-                          <visible>Container(2000).HasFocus(60)</visible>
-                          <visible>String.IsEqual(Window(10000).Property(redlight.aiostreams.available),true)</visible>
-                          <visible>String.IsEqual(Window(10000).Property(redlight.provider.aiostreams),true)</visible>
-                          <visible>![String.IsEmpty(Window(10000).Property(redlight.aiostreams.username)) + String.IsEmpty(Window(10000).Property(redlight.aiostreams.password))]</visible>
-                          <visible>String.IsEqual(Window(10000).Property(redlight.check.aiostreams),true)</visible>
-                          <property name="setting_label">    - Autoplay Result</property>
-                          <property name="setting_type">boolean</property>
-                          <property name="setting_value">$INFO[Window(10000).Property(redlight.autoplay.aiostreams)]</property>
-                          <property name="setting_description">When Check Before Full Search is enabled, autoplay the top AIOStreams result if one is found during prescrape.</property>
-                          <onclick>RunPlugin(plugin://plugin.video.redlight/?mode=settings_manager.set_boolean&amp;setting_id=autoplay.aiostreams)</onclick>
-                      </item>
-                      <item>
-                          <visible>Container(2000).HasFocus(60)</visible>
-                          <visible>String.IsEqual(Window(10000).Property(redlight.aiostreams.available),true)</visible>
-                          <visible>String.IsEqual(Window(10000).Property(redlight.provider.aiostreams),true)</visible>
-                          <visible>![String.IsEmpty(Window(10000).Property(redlight.aiostreams.username)) + String.IsEmpty(Window(10000).Property(redlight.aiostreams.password))]</visible>
-                          <property name="setting_label">Priority (Lower Number Equals Higher Priority)</property>
-                          <property name="setting_type">numeric</property>
-                          <property name="setting_value">$INFO[Window(10000).Property(redlight.aio.priority)]</property>
-                          <property name="setting_description">Choose the order in which AIOStreams results appear in relation to any other active accounts. The lower the number, the higher the sort order.</property>
-                          <onclick>RunPlugin(plugin://plugin.video.redlight/?mode=settings_manager.set_numeric&amp;setting_id=aio.priority)</onclick>
-                      </item>
         <!-- Local Media Folders -->
                       <item>
-                          <visible>Container(2000).HasFocus(60)</visible>
+                          <visible>Container(2000).HasFocus(62)</visible>
                           <property name="setting_label">Local Media Folders</property>
                           <property name="setting_type">separator</property>
                           <onclick>noop</onclick>
                       </item>
                       <item>
-                          <visible>Container(2000).HasFocus(60)</visible>
+                          <visible>Container(2000).HasFocus(62)</visible>
                           <property name="setting_label">Enable</property>
                           <property name="setting_type">boolean</property>
                           <property name="setting_value">$INFO[Window(10000).Property(redlight.provider.folders)]</property>
@@ -3017,7 +3045,7 @@
                           <onclick>RunPlugin(plugin://plugin.video.redlight/?mode=settings_manager.set_boolean&amp;setting_id=provider.folders)</onclick>
                       </item>
                       <item>
-                          <visible>Container(2000).HasFocus(60)</visible>
+                          <visible>Container(2000).HasFocus(62)</visible>
                           <visible>String.IsEqual(Window(10000).Property(redlight.provider.folders),true)</visible>
                           <property name="setting_label">Set Folder Scrapers</property>
                           <property name="setting_type">action</property>
@@ -3026,7 +3054,7 @@
                           <onclick>RunPlugin(plugin://plugin.video.redlight/?mode=sources_folders_choice)</onclick>
                       </item>
                       <item>
-                          <visible>Container(2000).HasFocus(60)</visible>
+                          <visible>Container(2000).HasFocus(62)</visible>
                           <visible>String.IsEqual(Window(10000).Property(redlight.provider.folders),true)</visible>
                           <property name="setting_label">Filter Results by Name</property>
                           <property name="setting_type">boolean</property>
@@ -3035,26 +3063,26 @@
                           <onclick>RunPlugin(plugin://plugin.video.redlight/?mode=settings_manager.set_boolean&amp;setting_id=folders.title_filter)</onclick>
                       </item>
                       <item>
-                          <visible>Container(2000).HasFocus(60)</visible>
+                          <visible>Container(2000).HasFocus(62)</visible>
                           <visible>String.IsEqual(Window(10000).Property(redlight.provider.folders),true)</visible>
                           <property name="setting_label">Check Before Full Search</property>
                           <property name="setting_type">boolean</property>
                           <property name="setting_value">$INFO[Window(10000).Property(redlight.check.folders)]</property>
-                          <property name="setting_description">Enable this and Red Light will search for results from your local media folders before checking other enabled scrapers</property>
+                          <property name="setting_description">Search your local media folders early in the source search, before external torrent scrapers and the rest of the internal scrape list finish. Does not replace other providers — the full source search continues afterward. Pair with Autoplay Result below (shown when Check Before Full Search is enabled) to autoplay a prescrape hit from this source.</property>
                           <onclick>RunPlugin(plugin://plugin.video.redlight/?mode=settings_manager.set_boolean&amp;setting_id=check.folders)</onclick>
                       </item>
                       <item>
-                          <visible>Container(2000).HasFocus(60)</visible>
+                          <visible>Container(2000).HasFocus(62)</visible>
                           <visible>String.IsEqual(Window(10000).Property(redlight.provider.folders),true)</visible>
                           <visible>String.IsEqual(Window(10000).Property(redlight.check.folders),true)</visible>
                           <property name="setting_label">    - Autoplay Result</property>
                           <property name="setting_type">boolean</property>
                           <property name="setting_value">$INFO[Window(10000).Property(redlight.autoplay.folders)]</property>
-                          <property name="setting_description">Enable this and Red Light will Autoplay the top result found from Local Folders</property>
+                          <property name="setting_description">When Check Before Full Search is enabled, autoplay the top local media folders result found during prescrape instead of opening the results list. Requires Autoplay under Playback > Movies or Episodes, and respects Limit Autoplay Quality there.</property>
                           <onclick>RunPlugin(plugin://plugin.video.redlight/?mode=settings_manager.set_boolean&amp;setting_id=autoplay.folders)</onclick>
                       </item>
                       <item>
-                          <visible>Container(2000).HasFocus(60)</visible>
+                          <visible>Container(2000).HasFocus(62)</visible>
                           <visible>String.IsEqual(Window(10000).Property(redlight.provider.folders),true)</visible>
                           <property name="setting_label">Show Results at Top</property>
                           <property name="setting_type">boolean</property>
@@ -3063,7 +3091,7 @@
                           <onclick>RunPlugin(plugin://plugin.video.redlight/?mode=settings_manager.set_boolean&amp;setting_id=results.sort_folders_first)</onclick>
                       </item>
                       <item>
-                          <visible>Container(2000).HasFocus(60)</visible>
+                          <visible>Container(2000).HasFocus(62)</visible>
                           <visible>String.IsEqual(Window(10000).Property(redlight.provider.folders),true)</visible>
                           <property name="setting_label">Ignore Quality and Size Filters</property>
                           <property name="setting_type">boolean</property>
@@ -3072,7 +3100,7 @@
                           <onclick>RunPlugin(plugin://plugin.video.redlight/?mode=settings_manager.set_boolean&amp;setting_id=results.folders_ignore_filters)</onclick>
                       </item>
                       <item>
-                          <visible>Container(2000).HasFocus(60)</visible>
+                          <visible>Container(2000).HasFocus(62)</visible>
                           <visible>String.IsEqual(Window(10000).Property(redlight.provider.folders),true)</visible>
                           <property name="setting_label">Priority (Lower Number Equals Higher Priority)</property>
                           <property name="setting_type">numeric</property>
@@ -3353,20 +3381,11 @@
                       <item>
                           <visible>Container(2000).HasFocus(70)</visible>
                           <visible>String.IsEqual(Window(10000).Property(redlight.highlight.type),0)</visible>
-                          <property name="setting_label">    - Real Debrid Color</property>
+                          <property name="setting_label">    - AIOStreams Color</property>
                           <property name="setting_type">action</property>
-                          <property name="setting_value">[COLOR $INFO[Window(10000).Property(redlight.provider.rd_highlight)]]$INFO[Window(10000).Property(redlight.provider.rd_highlight)][/COLOR]</property>
-                          <property name="setting_description">Choose Real Debrid color</property>
-                          <onclick>RunPlugin(plugin://plugin.video.redlight/?mode=scraper_color_choice&amp;setting_id=provider.rd_highlight)</onclick>
-                      </item>
-                      <item>
-                          <visible>Container(2000).HasFocus(70)</visible>
-                          <visible>String.IsEqual(Window(10000).Property(redlight.highlight.type),0)</visible>
-                          <property name="setting_label">    - Premiumize Color</property>
-                          <property name="setting_type">action</property>
-                          <property name="setting_value">[COLOR $INFO[Window(10000).Property(redlight.provider.pm_highlight)]]$INFO[Window(10000).Property(redlight.provider.pm_highlight)][/COLOR]</property>
-                          <property name="setting_description">Choose Premiumize color</property>
-                          <onclick>RunPlugin(plugin://plugin.video.redlight/?mode=scraper_color_choice&amp;setting_id=provider.pm_highlight)</onclick>
+                          <property name="setting_value">[COLOR $INFO[Window(10000).Property(redlight.provider.aiostreams_highlight)]]$INFO[Window(10000).Property(redlight.provider.aiostreams_highlight)][/COLOR]</property>
+                          <property name="setting_description">Choose AIOStreams color</property>
+                          <onclick>RunPlugin(plugin://plugin.video.redlight/?mode=scraper_color_choice&amp;setting_id=provider.aiostreams_highlight)</onclick>
                       </item>
                       <item>
                           <visible>Container(2000).HasFocus(70)</visible>
@@ -3380,20 +3399,11 @@
                       <item>
                           <visible>Container(2000).HasFocus(70)</visible>
                           <visible>String.IsEqual(Window(10000).Property(redlight.highlight.type),0)</visible>
-                          <property name="setting_label">    - Offcloud Color</property>
+                          <property name="setting_label">    - Debrid Cloud Color</property>
                           <property name="setting_type">action</property>
-                          <property name="setting_value">[COLOR $INFO[Window(10000).Property(redlight.provider.oc_highlight)]]$INFO[Window(10000).Property(redlight.provider.oc_highlight)][/COLOR]</property>
-                          <property name="setting_description">Choose Offcloud color</property>
-                          <onclick>RunPlugin(plugin://plugin.video.redlight/?mode=scraper_color_choice&amp;setting_id=provider.oc_highlight)</onclick>
-                      </item>
-                      <item>
-                          <visible>Container(2000).HasFocus(70)</visible>
-                          <visible>String.IsEqual(Window(10000).Property(redlight.highlight.type),0)</visible>
-                          <property name="setting_label">    - TorBox Color</property>
-                          <property name="setting_type">action</property>
-                          <property name="setting_value">[COLOR $INFO[Window(10000).Property(redlight.provider.tb_highlight)]]$INFO[Window(10000).Property(redlight.provider.tb_highlight)][/COLOR]</property>
-                          <property name="setting_description">Choose TorBox color</property>
-                          <onclick>RunPlugin(plugin://plugin.video.redlight/?mode=scraper_color_choice&amp;setting_id=provider.tb_highlight)</onclick>
+                          <property name="setting_value">[COLOR $INFO[Window(10000).Property(redlight.provider.debrid_cloud_highlight)]]$INFO[Window(10000).Property(redlight.provider.debrid_cloud_highlight)][/COLOR]</property>
+                          <property name="setting_description">Choose Debrid Cloud color</property>
+                          <onclick>RunPlugin(plugin://plugin.video.redlight/?mode=scraper_color_choice&amp;setting_id=provider.debrid_cloud_highlight)</onclick>
                       </item>
                       <item>
                           <visible>Container(2000).HasFocus(70)</visible>
@@ -3407,21 +3417,38 @@
                       <item>
                           <visible>Container(2000).HasFocus(70)</visible>
                           <visible>String.IsEqual(Window(10000).Property(redlight.highlight.type),0)</visible>
-                          <visible>String.IsEqual(Window(10000).Property(redlight.aiostreams.available),true)</visible>
-                          <property name="setting_label">    - AIOStreams Color</property>
+                          <property name="setting_label">    - Offcloud Color</property>
                           <property name="setting_type">action</property>
-                          <property name="setting_value">[COLOR $INFO[Window(10000).Property(redlight.provider.aiostreams_highlight)]]$INFO[Window(10000).Property(redlight.provider.aiostreams_highlight)][/COLOR]</property>
-                          <property name="setting_description">Choose AIOStreams color</property>
-                          <onclick>RunPlugin(plugin://plugin.video.redlight/?mode=scraper_color_choice&amp;setting_id=provider.aiostreams_highlight)</onclick>
+                          <property name="setting_value">[COLOR $INFO[Window(10000).Property(redlight.provider.oc_highlight)]]$INFO[Window(10000).Property(redlight.provider.oc_highlight)][/COLOR]</property>
+                          <property name="setting_description">Choose Offcloud color</property>
+                          <onclick>RunPlugin(plugin://plugin.video.redlight/?mode=scraper_color_choice&amp;setting_id=provider.oc_highlight)</onclick>
                       </item>
                       <item>
                           <visible>Container(2000).HasFocus(70)</visible>
                           <visible>String.IsEqual(Window(10000).Property(redlight.highlight.type),0)</visible>
-                          <property name="setting_label">    - Debrid Cloud Color</property>
+                          <property name="setting_label">    - Premiumize Color</property>
                           <property name="setting_type">action</property>
-                          <property name="setting_value">[COLOR $INFO[Window(10000).Property(redlight.provider.debrid_cloud_highlight)]]$INFO[Window(10000).Property(redlight.provider.debrid_cloud_highlight)][/COLOR]</property>
-                          <property name="setting_description">Choose Debrid Cloud color</property>
-                          <onclick>RunPlugin(plugin://plugin.video.redlight/?mode=scraper_color_choice&amp;setting_id=provider.debrid_cloud_highlight)</onclick>
+                          <property name="setting_value">[COLOR $INFO[Window(10000).Property(redlight.provider.pm_highlight)]]$INFO[Window(10000).Property(redlight.provider.pm_highlight)][/COLOR]</property>
+                          <property name="setting_description">Choose Premiumize color</property>
+                          <onclick>RunPlugin(plugin://plugin.video.redlight/?mode=scraper_color_choice&amp;setting_id=provider.pm_highlight)</onclick>
+                      </item>
+                      <item>
+                          <visible>Container(2000).HasFocus(70)</visible>
+                          <visible>String.IsEqual(Window(10000).Property(redlight.highlight.type),0)</visible>
+                          <property name="setting_label">    - Real Debrid Color</property>
+                          <property name="setting_type">action</property>
+                          <property name="setting_value">[COLOR $INFO[Window(10000).Property(redlight.provider.rd_highlight)]]$INFO[Window(10000).Property(redlight.provider.rd_highlight)][/COLOR]</property>
+                          <property name="setting_description">Choose Real Debrid color</property>
+                          <onclick>RunPlugin(plugin://plugin.video.redlight/?mode=scraper_color_choice&amp;setting_id=provider.rd_highlight)</onclick>
+                      </item>
+                      <item>
+                          <visible>Container(2000).HasFocus(70)</visible>
+                          <visible>String.IsEqual(Window(10000).Property(redlight.highlight.type),0)</visible>
+                          <property name="setting_label">    - TorBox Color</property>
+                          <property name="setting_type">action</property>
+                          <property name="setting_value">[COLOR $INFO[Window(10000).Property(redlight.provider.tb_highlight)]]$INFO[Window(10000).Property(redlight.provider.tb_highlight)][/COLOR]</property>
+                          <property name="setting_description">Choose TorBox color</property>
+                          <onclick>RunPlugin(plugin://plugin.video.redlight/?mode=scraper_color_choice&amp;setting_id=provider.tb_highlight)</onclick>
                       </item>
                       <item>
                           <visible>Container(2000).HasFocus(70)</visible>
@@ -3504,10 +3531,10 @@
                       </item>
                       <item>
                           <visible>Container(2000).HasFocus(80)</visible>
-                          <property name="setting_label">Auto Play</property>
+                          <property name="setting_label">Autoplay</property>
                           <property name="setting_type">boolean</property>
                           <property name="setting_value">$INFO[Window(10000).Property(redlight.auto_play_movie)]</property>
-                          <property name="setting_description">Enable this for Movies to play automatically when selected</property>
+                          <property name="setting_description">Enable this for Movies to autoplay automatically when selected</property>
                           <onclick>RunPlugin(plugin://plugin.video.redlight/?mode=settings_manager.set_boolean&amp;setting_id=auto_play_movie)</onclick>
                       </item>
                       <item>
@@ -3522,7 +3549,7 @@
                       <item>
                           <visible>Container(2000).HasFocus(80)</visible>
                           <visible>String.IsEqual(Window(10000).Property(redlight.auto_play_movie),true)</visible>
-                          <property name="setting_label">Limit Auto Play Quality</property>
+                          <property name="setting_label">Limit Autoplay Quality</property>
                           <property name="setting_type">action</property>
                           <property name="setting_value">$INFO[Window(10000).Property(redlight.autoplay_quality_movie)]</property>
                           <property name="setting_description">Choose the Quality properties allowed for autoplay results</property>
@@ -3571,10 +3598,10 @@
                       </item>
                       <item>
                           <visible>Container(2000).HasFocus(80)</visible>
-                          <property name="setting_label">Auto Play</property>
+                          <property name="setting_label">Autoplay</property>
                           <property name="setting_type">boolean</property>
                           <property name="setting_value">$INFO[Window(10000).Property(redlight.auto_play_episode)]</property>
-                          <property name="setting_description">Enable this for Episodes to play automatically when selected</property>
+                          <property name="setting_description">Enable this for Episodes to autoplay automatically when selected</property>
                           <onclick>RunPlugin(plugin://plugin.video.redlight/?mode=settings_manager.set_boolean&amp;setting_id=auto_play_episode)</onclick>
                       </item>
                       <item>
@@ -3589,7 +3616,7 @@
                       <item>
                           <visible>Container(2000).HasFocus(80)</visible>
                           <visible>String.IsEqual(Window(10000).Property(redlight.auto_play_episode),true)</visible>
-                          <property name="setting_label">Limit Auto Play Quality</property>
+                          <property name="setting_label">Limit Autoplay Quality</property>
                           <property name="setting_type">action</property>
                           <property name="setting_value">$INFO[Window(10000).Property(redlight.autoplay_quality_episode)]</property>
                           <property name="setting_description">Choose the Quality properties allowed for autoplay results</property>
@@ -3700,7 +3727,7 @@
                           <property name="setting_label">    - Check Still Watching After... (0=Off)</property>
                           <property name="setting_type">numeric</property>
                           <property name="setting_value">$INFO[Window(10000).Property(redlight.autoplay_watching_check)]</property>
-                          <property name="setting_description">Choose after how many auto played episodes Red Light will ask if you are still watching. Set to 0 to disable</property>
+                          <property name="setting_description">Choose after how many autoplayed episodes Red Light will ask if you are still watching. Set to 0 to disable</property>
                           <onclick>RunPlugin(plugin://plugin.video.redlight/?mode=settings_manager.set_numeric&amp;setting_id=autoplay_watching_check)</onclick>
                       </item>
                       <item>
@@ -3904,11 +3931,7 @@
                 <left>15</left>
                 <width>1685</width>
                 <height>120</height>
-                <!-- Match right-hand settings list vertical offset so INFO stays directly below it -->
-                <animation effect="slide" end="0,-340" time="0" condition="Control.HasFocus(2100) + [Integer.IsEqual(Container(2100).NumItems,1) | Integer.IsEqual(Container(2100).NumItems,2)]">Conditional</animation>
-                <animation effect="slide" end="0,-255" time="0" condition="Control.HasFocus(2100) + [Integer.IsEqual(Container(2100).NumItems,3) | Integer.IsEqual(Container(2100).NumItems,4)]">Conditional</animation>
-                <animation effect="slide" end="0,-170" time="0" condition="Control.HasFocus(2100) + [Integer.IsEqual(Container(2100).NumItems,5) | Integer.IsEqual(Container(2100).NumItems,6)]">Conditional</animation>
-                <animation effect="slide" end="0,-85" time="0" condition="Control.HasFocus(2100) + [Integer.IsEqual(Container(2100).NumItems,7) | Integer.IsEqual(Container(2100).NumItems,8)]">Conditional</animation>
+                <!-- Match left nav vertical offset when the section list has focus -->
                 <animation effect="slide" end="0,-340" time="0" condition="Control.HasFocus(2000) + [Integer.IsEqual(Container(2000).NumItems,1) | Integer.IsEqual(Container(2000).NumItems,2)]">Conditional</animation>
                 <animation effect="slide" end="0,-255" time="0" condition="Control.HasFocus(2000) + [Integer.IsEqual(Container(2000).NumItems,3) | Integer.IsEqual(Container(2000).NumItems,4)]">Conditional</animation>
                 <animation effect="slide" end="0,-170" time="0" condition="Control.HasFocus(2000) + [Integer.IsEqual(Container(2000).NumItems,5) | Integer.IsEqual(Container(2000).NumItems,6)]">Conditional</animation>

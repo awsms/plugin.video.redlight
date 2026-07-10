@@ -72,7 +72,7 @@ class source:
 					if self.internal_activated or self.internal_prescraped: alive_threads.extend(self.process_internal_results())
 					self.poll_cloud_scrapers()
 					line1 =  ', '.join(alive_threads).upper()
-					percent = (max((time.time() - start_time), 0)/float(self.timeout))*100
+					percent = min(100, int((max((time.time() - start_time), 0) / float(self.timeout)) * 100))
 					self.progress_dialog.update_scraper(self.sources_sd, self.sources_720p, self.sources_1080p, self.sources_4k, self.sources_total, line1, percent)
 					if self.threads_completed:
 						len_alive_threads = len(alive_threads)

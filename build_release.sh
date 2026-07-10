@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 # Build a Red Light release into packages/ for the addon's built-in self-updater.
 #
-# The updater (resources/lib/modules/updater.py) reads, from the "main" branch of
+# The updater (resources/lib/modules/updater.py) reads, from the "master" branch of
 # this repo at packages/:
 #   - redlightam_version                       -> the online version string
 #   - redlightam_changes                       -> changelog shown before updating
@@ -9,7 +9,7 @@
 #
 # Usage:
 #   ./build_release.sh           # build packages/ locally
-#   ./build_release.sh --push    # build, then git commit + push to origin/main
+#   ./build_release.sh --push    # build, then git commit + push to origin
 set -euo pipefail
 
 ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
@@ -18,6 +18,11 @@ ADDON_DIR="$ROOT/$ADDON_ID"
 PKG_DIR="$ROOT/packages"
 
 [ -f "$ADDON_DIR/addon.xml" ] || { echo "ERROR: $ADDON_DIR/addon.xml not found" >&2; exit 1; }
+if [ -n "$(find "$ADDON_DIR" -type l -print -quit)" ]; then
+	echo "ERROR: refusing to package symbolic links from the upstream add-on:" >&2
+	find "$ADDON_DIR" -type l -print >&2
+	exit 1
+fi
 
 # First version="..." in addon.xml is the addon version (it precedes the imports).
 VERSION="$(grep -m1 -oP 'version="\K[^"]+' "$ADDON_DIR/addon.xml")"
